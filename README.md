@@ -1,2 +1,3 @@
-# chess
-CS240 Chess Project
+# 240 chess
+
+im gonna work on the project before the due dates
