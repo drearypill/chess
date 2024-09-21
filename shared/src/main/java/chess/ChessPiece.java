@@ -10,8 +10,11 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
+private ChessPiece.PieceType type;
+private ChessGame.TeamColor pieceColor;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.type = type;
+        this.pieceColor = pieceColor;
     }
 
     /**
@@ -37,7 +40,7 @@ public class ChessPiece {
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -48,6 +51,23 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        Collection<ChessMove> places = new ArrayList<>();
+        switch (board.getPiece(myPosition).getPieceType()) {
+            case KING -> {
+                int row = myPosition.getRow();
+                int col = myPosition.getColumn();
+
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col+1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row,col+1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col+1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col-1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row,col-1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col-1), PieceType.KING));
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col), PieceType.KING));
+            }
+
+        }
+        return places;
     }
 }
