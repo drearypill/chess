@@ -2,6 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+
 
 /**
  * Represents a single chess piece
@@ -10,7 +12,19 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-private ChessPiece.PieceType type;
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + pieceColor.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    private ChessPiece.PieceType type;
 private ChessGame.TeamColor pieceColor;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.type = type;
@@ -57,14 +71,19 @@ private ChessGame.TeamColor pieceColor;
                 int row = myPosition.getRow();
                 int col = myPosition.getColumn();
 
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col+1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row,col+1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col+1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col-1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row,col-1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col-1), PieceType.KING));
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col), PieceType.KING));
+                ChessPosition spot = new ChessPosition(row+1,col+1) ;
+                ChessPiece collisionPiece =board.getPiece(spot);
+                if (collisionPiece == null || collisionPiece.pieceColor != this.pieceColor){
+                    places.add(new ChessMove(myPosition, spot, null));
+                };
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col+1), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row,col+1), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col+1), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col-1), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col-1), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col), null));
+                places.add(new ChessMove(myPosition, new ChessPosition(row,col-1), null));
             }
 
         }
