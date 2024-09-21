@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 
 /**
@@ -14,8 +13,8 @@ import java.util.Objects;
 public class ChessPiece {
     @Override
     public int hashCode() {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + pieceColor.hashCode();
+        int result=type != null ? type.hashCode() : 0;
+        result=31 * result + pieceColor.hashCode();
         return result;
     }
 
@@ -25,10 +24,11 @@ public class ChessPiece {
     }
 
     private ChessPiece.PieceType type;
-private ChessGame.TeamColor pieceColor;
+    private ChessGame.TeamColor pieceColor;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.type = type;
-        this.pieceColor = pieceColor;
+        this.type=type;
+        this.pieceColor=pieceColor;
     }
 
     /**
@@ -62,21 +62,18 @@ private ChessGame.TeamColor pieceColor;
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
      *
-     * @return Collection of valid moves
+     * @return
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> places = new ArrayList<>();
+        Collection<ChessMove> places=new ArrayList<>();
         switch (board.getPiece(myPosition).getPieceType()) {
             case KING -> {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-                for (int i =-1; i <2; i++) {
-                    for (int j = -1; j<2; j++){
-//                        if (row+i <1 || row+i >7 || col+j <1 || col+j >7) {
-//                            continue;
-//                        }
-                        ChessPosition spot = new ChessPosition(row+i,col+j);
-                        if (spot.checkInBounds()){
+                int row=myPosition.getRow();
+                int col=myPosition.getColumn();
+                for (int i=-1; i < 2; i++) {
+                    for (int j=-1; j < 2; j++) {
+                        ChessPosition spot=new ChessPosition(row + i, col + j);
+                        if (spot.checkInBounds()) {
                             ChessPiece collisionPiece=board.getPiece(spot);
                             if (collisionPiece == null || collisionPiece.pieceColor != this.pieceColor) {
                                 places.add(new ChessMove(myPosition, spot, null));
@@ -84,12 +81,73 @@ private ChessGame.TeamColor pieceColor;
                         }
                     }
                 }
-
-
-
+                return places;
             }
+            case BISHOP -> {
+                int row=myPosition.getRow();
+                int col=myPosition.getColumn();
+                ChessPiece movingPiece=board.getPiece(myPosition);
+                for (int i=0; i < 8; i++) {
+                    ChessPosition spot=new ChessPosition(row + i, col + i);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece=board.getPiece(spot);
+                        if (collisionPiece == null) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            continue;
+                            }
+                        if (collisionPiece.pieceColor != movingPiece.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                            }
 
+                        }
+                    }
+                for (int i=0; i < 8; i++) {
+                    ChessPosition spot=new ChessPosition(row - i, col + i);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece=board.getPiece(spot);
+                        if (collisionPiece == null) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            continue;}
+                        if (collisionPiece.pieceColor != movingPiece.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                        }
+
+                    }
+                }
+                for (int i=0; i < 8; i++) {
+                    ChessPosition spot=new ChessPosition(row + i, col - i);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece=board.getPiece(spot);
+                        if (collisionPiece == null) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            continue;}
+                        if (collisionPiece.pieceColor != movingPiece.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                        }
+
+                    }
+                }
+                for (int i=0; i < 8; i++) {
+                    ChessPosition spot=new ChessPosition(row - i, col - i);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece=board.getPiece(spot);
+                        if (collisionPiece == null) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            continue;}
+                        if (collisionPiece.pieceColor != movingPiece.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                        }
+
+                    }
+                }
+
+                return places;
+            }
         }
-        return places;
-    }
-}
+
+      return places;
+    }}
