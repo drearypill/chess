@@ -99,9 +99,12 @@ public class ChessPiece {
                             places.add(new ChessMove(myPosition, spot, null));
                             break;
                             }
-
+                        if (collisionPiece.pieceColor == movingPiece.pieceColor && i != 0) {
+                            break;
+                            }
                         }
                     }
+
                 for (int i=0; i < 8; i++) {
                     ChessPosition spot=new ChessPosition(row - i, col + i);
                     if (spot.checkInBounds()) {
@@ -111,6 +114,9 @@ public class ChessPiece {
                             continue;}
                         if (collisionPiece.pieceColor != movingPiece.pieceColor) {
                             places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                        }
+                        if (collisionPiece.pieceColor == movingPiece.pieceColor && i != 0) {
                             break;
                         }
 
@@ -127,6 +133,9 @@ public class ChessPiece {
                             places.add(new ChessMove(myPosition, spot, null));
                             break;
                         }
+                        if (collisionPiece.pieceColor == movingPiece.pieceColor && i != 0) {
+                            break;
+                        }
 
                     }
                 }
@@ -139,6 +148,9 @@ public class ChessPiece {
                             continue;}
                         if (collisionPiece.pieceColor != movingPiece.pieceColor) {
                             places.add(new ChessMove(myPosition, spot, null));
+                            break;
+                        }
+                        if (collisionPiece.pieceColor == movingPiece.pieceColor && i != 0) {
                             break;
                         }
 
