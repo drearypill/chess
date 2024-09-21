@@ -70,20 +70,23 @@ private ChessGame.TeamColor pieceColor;
             case KING -> {
                 int row = myPosition.getRow();
                 int col = myPosition.getColumn();
+                for (int i =-1; i <2; i++) {
+                    for (int j = -1; j<2; j++){
+//                        if (row+i <1 || row+i >7 || col+j <1 || col+j >7) {
+//                            continue;
+//                        }
+                        ChessPosition spot = new ChessPosition(row+i,col+j);
+                        if (spot.checkInBounds()){
+                            ChessPiece collisionPiece=board.getPiece(spot);
+                            if (collisionPiece == null || collisionPiece.pieceColor != this.pieceColor) {
+                                places.add(new ChessMove(myPosition, spot, null));
+                            }
+                        }
+                    }
+                }
 
-                ChessPosition spot = new ChessPosition(row+1,col+1) ;
-                ChessPiece collisionPiece =board.getPiece(spot);
-                if (collisionPiece == null || collisionPiece.pieceColor != this.pieceColor){
-                    places.add(new ChessMove(myPosition, spot, null));
-                };
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col+1), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row,col+1), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col+1), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row-1,col-1), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col-1), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row+1,col), null));
-                places.add(new ChessMove(myPosition, new ChessPosition(row,col-1), null));
+
+
             }
 
         }
