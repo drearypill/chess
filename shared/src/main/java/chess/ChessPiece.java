@@ -18,6 +18,13 @@ public class ChessPiece {
         return result;
     }
 
+//    @Override
+//    public int hashCode() {
+//        int result = pieceColor != null ? pieceColor.hashCode() : 0;
+//        result = 31 * result + (type != null ? type.() : 0);
+//        return result;
+//    }
+
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);

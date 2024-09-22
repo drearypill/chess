@@ -1,6 +1,8 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -11,25 +13,48 @@ import java.util.Arrays;
 public class ChessBoard {
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Arrays.deepHashCode(squares);
     }
 
     @Override
     public String toString() {
-        return "ChessBoard{" +
-                "squares=" + Arrays.toString(squares) +
-                '}';
+        StringBuilder output = new StringBuilder();
+        for (int y = 8; y >= 0; y--) {
+            output.append("|");
+            for (int x = 0; x < 9; x++) {
+                output.append(squares[x][y] != null ? squares[x][y].getPieceType().toString() : " ");
+                output.append("|");
+            }
+            output.append("\n");
+        }
+        return output.toString();
     }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        ChessBoard chessBoard = (ChessBoard) obj;
+//        return Arrays.deepEquals(squares, chessBoard.squares);
+//    }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        ChessBoard that = (ChessBoard) obj;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//        // Use Objects.deepEquals to compare fields, assuming you have fields field1 and field2
+//        return Arrays.deepEquals(this.squares, that.squares);
+//    }
+
+
 
     @Override
     public boolean equals(Object obj) {
-        ChessBoard chessBoard = (ChessBoard) obj;
-        return Arrays.deepEquals(squares, chessBoard.squares);
+        ChessBoard that = (ChessBoard) obj;
+        return Objects.deepEquals(that.squares ,squares);
     }
 
     private ChessPiece[][] squares = new ChessPiece[9][9];
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -63,6 +88,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        squares = new ChessPiece[9][9];
+
         //Add all white pieces
         addPiece(new ChessPosition(1, 1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
         addPiece(new ChessPosition(1, 2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
@@ -89,4 +116,5 @@ public class ChessBoard {
             addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
     }
+
 }
