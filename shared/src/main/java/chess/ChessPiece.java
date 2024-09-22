@@ -445,7 +445,6 @@ public class ChessPiece {
             case PAWN -> {
                 int row=myPosition.getRow();
                 int col=myPosition.getColumn();
-
                 if (this.pieceColor == ChessGame.TeamColor.WHITE) {
                     ChessPosition spot=new ChessPosition(row + 1, col); //forward move 1
                     if (spot.checkInBounds()) {
@@ -511,7 +510,13 @@ public class ChessPiece {
                     ChessPosition spot=new ChessPosition(row - 1, col); //forward move 1
                     if (spot.checkInBounds()) {
                         ChessPiece collisionPiece = board.getPiece(spot);
-                        if (collisionPiece == null) {
+                        if (row == 2 && collisionPiece == null) { //promotion check
+                            places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                            places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                            places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                            places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                        }
+                        else if (collisionPiece == null) {
                             places.add(new ChessMove(myPosition, spot, null));
                         }
                     }
@@ -535,14 +540,26 @@ public class ChessPiece {
                     spot = new ChessPosition(row - 1, col + 1);
                     if (spot.checkInBounds()) {
                         ChessPiece collisionPiece = board.getPiece(spot);
-                        if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                        if (row == 2 && collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) { //promotion check
+                            places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                            places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                            places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                            places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                        }
+                        else if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
                             places.add(new ChessMove(myPosition, spot, null));
                         }
                     } //check for attacks
                     spot = new ChessPosition(row - 1, col - 1);
                     if (spot.checkInBounds()) {
                         ChessPiece collisionPiece = board.getPiece(spot);
-                        if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                        if (row == 2 && collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) { //promotion check
+                            places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                            places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                            places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                            places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                        }
+                        else if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
                             places.add(new ChessMove(myPosition, spot, null));
                         }
                     } //check for attacks
