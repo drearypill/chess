@@ -25,9 +25,13 @@ public class ChessPiece {
 //        return result;
 //    }
 
+
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor;
     }
 
     private ChessPiece.PieceType type;

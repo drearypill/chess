@@ -11,6 +11,7 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
+
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(squares);
@@ -44,13 +45,28 @@ public class ChessBoard {
 //        return Arrays.deepEquals(this.squares, that.squares);
 //    }
 
-
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        ChessBoard that = (ChessBoard) obj;
+//        return Objects.deepEquals(that.squares ,squares);
+//    }
+//
 
     @Override
-    public boolean equals(Object obj) {
-        ChessBoard that = (ChessBoard) obj;
-        return Objects.deepEquals(that.squares ,squares);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(squares, that.squares);
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof ChessBoard that)) return false;
+//        return Objects.deepEquals(squares, that.squares);
+//    }
 
     private ChessPiece[][] squares = new ChessPiece[9][9];
     public ChessBoard() {
