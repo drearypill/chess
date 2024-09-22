@@ -440,8 +440,11 @@ public class ChessPiece {
                 }
 
                 return places;
+                //aaa shoot i somehow forgot to commit because i did rook queen and knight so fast T-T
             }
-        }
+
+            }
+
 
       return places;
     }}
