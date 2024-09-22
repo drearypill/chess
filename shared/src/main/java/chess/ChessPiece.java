@@ -442,6 +442,114 @@ public class ChessPiece {
                 return places;
                 //aaa shoot i somehow forgot to commit because i did rook queen and knight so fast T-T
             }
+            case PAWN -> {
+                int row=myPosition.getRow();
+                int col=myPosition.getColumn();
+
+                if (this.pieceColor == ChessGame.TeamColor.WHITE) {
+                    ChessPosition spot=new ChessPosition(row + 1, col); //forward move 1
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (row == 7) { //promotion check
+                            if (collisionPiece == null) {
+                                places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                                places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                                places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                                places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                            }
+                        }
+                        if (collisionPiece == null && row != 7) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    }
+                    if (row == 2 && this.pieceColor == ChessGame.TeamColor.WHITE ){
+                        spot=new ChessPosition(row + 1, col); //initial move 2
+                        if (spot.checkInBounds()) {
+                            ChessPiece collisionPiece = board.getPiece(spot);
+                            if (collisionPiece == null) { // check nothing blocking directly
+                                spot=new ChessPosition(row + 2, col); //
+                                if (spot.checkInBounds()) {
+                                    collisionPiece = board.getPiece(spot);
+                                    if (collisionPiece == null) { // check blocked 2 ahead
+                                        places.add(new ChessMove(myPosition, spot, null));
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                    spot = new ChessPosition(row + 1, col + 1);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (row == 7 && collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) { //promotion check
+                            places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                            places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                            places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                            places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                        }
+                        else if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    } //check for attacks
+                    spot = new ChessPosition(row + 1, col - 1);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (row == 7 && collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) { //promotion check
+                            places.add(new ChessMove(myPosition, spot, PieceType.ROOK));
+                            places.add(new ChessMove(myPosition, spot, PieceType.KNIGHT));
+                            places.add(new ChessMove(myPosition, spot, PieceType.BISHOP));
+                            places.add(new ChessMove(myPosition, spot, PieceType.QUEEN));
+                        }
+                        else if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    } //check for attacks
+                }
+
+                if (this.pieceColor == ChessGame.TeamColor.BLACK) {
+                    ChessPosition spot=new ChessPosition(row - 1, col); //forward move 1
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (collisionPiece == null) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    }
+                    if (row == 7 && this.pieceColor == ChessGame.TeamColor.BLACK ){//initial move 2
+                        spot=new ChessPosition(row - 1, col);
+                        if (spot.checkInBounds()) {
+                            ChessPiece collisionPiece = board.getPiece(spot);
+                            if (collisionPiece == null) { // check nothing blocking directly
+                                spot=new ChessPosition(row - 2, col); //
+                                if (spot.checkInBounds()) {
+                                    collisionPiece = board.getPiece(spot);
+                                    if (collisionPiece == null) { // check blocked 2 ahead
+                                        places.add(new ChessMove(myPosition, spot, null));
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+                    spot = new ChessPosition(row - 1, col + 1);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    } //check for attacks
+                    spot = new ChessPosition(row - 1, col - 1);
+                    if (spot.checkInBounds()) {
+                        ChessPiece collisionPiece = board.getPiece(spot);
+                        if (collisionPiece != null && collisionPiece.pieceColor != this.pieceColor) {
+                            places.add(new ChessMove(myPosition, spot, null));
+                        }
+                    } //check for attacks
+                }
+
+                return places;
+            }
 
             }
 
