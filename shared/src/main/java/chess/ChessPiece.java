@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 
 /**
@@ -11,27 +12,17 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    @Override
-    public int hashCode() {
-        int result=type != null ? type.hashCode() : 0;
-        result=31 * result + pieceColor.hashCode();
-        return result;
-    }
-
-//    @Override
-//    public int hashCode() {
-//        int result = pieceColor != null ? pieceColor.hashCode() : 0;
-//        result = 31 * result + (type != null ? type.() : 0);
-//        return result;
-//    }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessPiece that = (ChessPiece) o;
+        if (!(o instanceof ChessPiece that)) return false;
         return type == that.type && pieceColor == that.pieceColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor);
     }
 
     private ChessPiece.PieceType type;
