@@ -12,11 +12,6 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-//    @Override
-//    public int hashCode() {
-//        return Arrays.deepHashCode(squares);
-//    }
-
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
@@ -71,6 +66,26 @@ public class ChessBoard {
         else { return null;}
     }
 
+
+    public void movePiece(ChessMove move) {
+        int startRow = move.getStartPosition().getRow() - 1;
+        int startColumn = move.getStartPosition().getColumn() - 1;
+        int endRow = move.getEndPosition().getRow() - 1;
+        int endColumn = move.getEndPosition().getColumn() - 1;
+
+        ChessPiece startPiece = getPiece(move.getStartPosition());
+        // Check for pawn promotion
+        if (move.getPromotionPiece() != null) {
+            ChessPiece promotionPiece = new ChessPiece(startPiece.getTeamColor(), move.getPromotionPiece());
+            squares[endRow][endColumn] = promotionPiece;
+        }
+        else {
+            squares[endRow][endColumn] = startPiece;
+        }
+
+        // Delete the old piece
+        squares[startRow][startColumn] = null;
+    }
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
