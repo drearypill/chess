@@ -11,8 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-
-    private  ChessPiece[][] squares = new ChessPiece[9][9]; //difference
+    private final ChessPiece[][] squares = new ChessPiece[8][8];
 
     public ChessBoard() {}
     public ChessBoard(ChessBoard boardToCopy) {
@@ -27,7 +26,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        squares[position.getRow()][position.getColumn()] = piece;
+        squares[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -38,12 +37,19 @@ public class ChessBoard {
      * position
      */
 
-    public void movePiece(ChessMove move) {
-        int startRow = move.getStartPosition().getRow();
-        int startColumn = move.getStartPosition().getColumn();
-        int endRow = move.getEndPosition().getRow();
-        int endColumn = move.getEndPosition().getColumn();
+    public ChessPiece getPiece(ChessPosition position) {
+        return squares[position.getRow()-1][position.getColumn()-1];
+    }
 
+    public void movePiece(ChessMove move) {
+        int startRow = move.getStartPosition().getRow() - 1;
+        int startColumn = move.getStartPosition().getColumn() - 1;
+
+        // Where it will end up
+        int endRow = move.getEndPosition().getRow() - 1;
+        int endColumn = move.getEndPosition().getColumn() - 1;
+
+        // Make the move
         ChessPiece startPiece = getPiece(move.getStartPosition());
         // Check for pawn promotion
         if (move.getPromotionPiece() != null) {
@@ -62,14 +68,6 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
 
-    public ChessPiece getPiece(ChessPosition position) {
-        if (position.checkInBounds()){
-            return squares[position.getRow()][position.getColumn()];
-        }
-        else { return null;}
-    }
-
-
     public ChessPosition getPiecePosition(ChessPiece piece) {
         //search board for the piece
         for (int i = 0; i < 8; i++) {
@@ -83,7 +81,7 @@ public class ChessBoard {
     }
 
     public void resetBoard() {
-        squares = new ChessPiece[9][9];
+        //squares = new ChessPiece[9][9];
 
         //Add all white pieces
         addPiece(new ChessPosition(1, 1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
