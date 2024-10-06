@@ -1,6 +1,5 @@
 package chess;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -11,28 +10,6 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-
-    @Override
-    public String toString() {
-        StringBuilder output = new StringBuilder();
-        for (int y = 8; y >= 0; y--) {
-            output.append("|");
-            for (int x = 0; x < 9; x++) {
-                output.append(squares[x][y] != null ? squares[x][y].getPieceType().toString() : "  ");
-                output.append("|");
-            }
-            output.append("\n");
-        }
-        return output.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(squares, that.squares);
-    }
 
 
     private  ChessPiece[][] squares = new ChessPiece[9][9]; //difference
@@ -133,6 +110,28 @@ public class ChessBoard {
         for (int i = 1; i <= 8; i++) {
             addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        for (int y = 8; y >= 0; y--) {
+            output.append("|");
+            for (int x = 0; x < 9; x++) {
+                output.append(squares[x][y] != null ? squares[x][y].getPieceType().toString() : "  ");
+                output.append("|");
+            }
+            output.append("\n");
+        }
+        return output.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(squares, that.squares);
     }
 
 }

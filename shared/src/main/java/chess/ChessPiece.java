@@ -25,8 +25,8 @@ public class ChessPiece {
         return Objects.hash(type, pieceColor);
     }
 
-    private ChessPiece.PieceType type;
-    private ChessGame.TeamColor pieceColor;
+    private final ChessPiece.PieceType type;
+    private final ChessGame.TeamColor pieceColor;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.type=type;
@@ -55,9 +55,7 @@ public class ChessPiece {
     /**
      * @return which type of chess piece this piece is
      */
-    public PieceType getPieceType() {
-        return type;
-    }
+    public PieceType getPieceType() {return type;}
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -66,6 +64,7 @@ public class ChessPiece {
      *
      * @return
      */
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> places=new ArrayList<>();
         switch (board.getPiece(myPosition).getPieceType()) {

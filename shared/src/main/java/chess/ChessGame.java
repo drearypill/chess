@@ -18,24 +18,19 @@ public class ChessGame {
         this.board = new ChessBoard();
         this.TeamTurn = TeamColor.WHITE;
         board.resetBoard();
-
     }
 
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {
-        return this.TeamTurn;
-    }
+    public TeamColor getTeamTurn() {return this.TeamTurn;}
 
     /**
      * Set's which teams turn it is
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {
-        TeamTurn = team;
-    }
+    public void setTeamTurn(TeamColor team) {TeamTurn = team;}
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -63,7 +58,7 @@ public class ChessGame {
 
             // Remove any that endanger the king
             for (ChessMove move : movesToCheck) {
-                if (!moveWillEndangerKing(move)){
+                if (moveWillEndangerKing(move)){
                     validMoves.add(move);
                 }
             }
@@ -140,31 +135,7 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    private Collection<ChessPiece> getTeamPieces(TeamColor teamColor) {
-        ArrayList<ChessPiece> pieces = new ArrayList<>();
 
-        for (int row = 1; row < 9; row++) {
-            for (int col = 1; col < 9; col++) {
-                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    pieces.add(piece);
-                }
-            }
-        }
-
-        return pieces;
-    }
-    private Collection<ChessMove> getValidTeamMoves(TeamColor teamColor) {
-        ArrayList<ChessMove> validMoves = new ArrayList<>();
-
-        Collection<ChessPiece> pieces = getTeamPieces(teamColor);
-
-        for (ChessPiece piece : pieces) {
-            validMoves.addAll(validMoves(board.getPiecePosition(piece)));
-        }
-
-        return validMoves;
-    }
 
     public boolean isInCheck(TeamColor teamColor) {
         if (teamColor == TeamColor.BLACK) {
@@ -193,7 +164,7 @@ public class ChessGame {
         ChessPosition ourKingPosition = board.getPiecePosition(ourKing);
         // check if the king is under attack
 
-        return attackersAtSpace(ourKingPosition).isEmpty();
+        return !attackersAtSpace(ourKingPosition).isEmpty();
     }
 
     private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
@@ -202,8 +173,8 @@ public class ChessGame {
             TeamColor targetTeam = board.getPiece(target).getTeamColor();
 
 
-            for (int row = 1; row <= 8; row++) {
-                for (int col = 1; col <= 8; col++) {
+            for (int row = 0; row <= 7; row++) {
+                for (int col = 0; col <= 7; col++) {
                     ChessPosition currentPosition = new ChessPosition(row, col);
                     ChessPiece piece = board.getPiece(currentPosition);
                     if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
@@ -227,14 +198,7 @@ public class ChessGame {
         }
         return false;
     }
-    private void toggleTeamTurn() {
-        if (TeamTurn == TeamColor.BLACK) {
-            TeamTurn = TeamColor.WHITE;
-        }
-        else {
-            TeamTurn = TeamColor.BLACK;
-        }
-    }
+
 
     /**
      * Determines if the given team is in checkmate
@@ -295,6 +259,41 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    private Collection<ChessPiece> getTeamPieces(TeamColor teamColor) {
+        ArrayList<ChessPiece> pieces = new ArrayList<>();
+
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    pieces.add(piece);
+                }
+            }
+        }
+
+        return pieces;
+    }
+    private Collection<ChessMove> getValidTeamMoves(TeamColor teamColor) {
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+
+        Collection<ChessPiece> pieces = getTeamPieces(teamColor);
+
+        for (ChessPiece piece : pieces) {
+            validMoves.addAll(validMoves(board.getPiecePosition(piece)));
+        }
+
+        return validMoves;
+    }
+
+    private void toggleTeamTurn() {
+        if (TeamTurn == TeamColor.BLACK) {
+            TeamTurn = TeamColor.WHITE;
+        }
+        else {
+            TeamTurn = TeamColor.BLACK;
+        }
     }
 
     @Override
