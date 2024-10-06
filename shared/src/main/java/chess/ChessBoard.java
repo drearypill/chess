@@ -65,7 +65,17 @@ public class ChessBoard {
         }
         else { return null;}
     }
-
+    public ChessPosition getPiecePosition(ChessPiece piece) {
+        //search board for the piece
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j] == piece) {
+                    return new ChessPosition(i + 1, j + 1);
+                }
+            }
+        }
+        return null;
+    }
 
     public void movePiece(ChessMove move) {
         int startRow = move.getStartPosition().getRow() - 1;

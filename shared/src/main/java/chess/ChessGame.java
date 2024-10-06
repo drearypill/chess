@@ -81,8 +81,82 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
+    private Collection<ChessPiece> getTeamPieces(TeamColor teamColor) {
+        ArrayList<ChessPiece> pieces = new ArrayList<>();
+
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    pieces.add(piece);
+                }
+            }
+        }
+
+        return pieces;
+    }
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        TeamColor opposingTeam = TeamColor.WHITE;
+        if (teamColor == TeamColor.WHITE) {
+            opposingTeam = TeamColor.BLACK;
+        }
+
+        // get all our remaining pieces
+        Collection<ChessPiece> ourPieces = getTeamPieces(teamColor);
+
+        // search pieces for king
+        ChessPiece ourKing = null;
+        for (ChessPiece piece : ourPieces) {
+            if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+                ourKing = piece;
+                break;
+            }
+        }
+
+        if (ourKing == null) {
+            return false;
+        }
+
+        ChessPosition ourKingPosition = board.getPiecePosition(ourKing);
+        // check if the king is under attack
+
+        return !attackersAtSpace(ourKingPosition).isEmpty();
+    }
+    private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
+        TeamColor targetTeam = board.getPiece(target).getTeamColor();
+        Collection<ChessPiece> attackingPieces = new ArrayList<>();
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition currentPosition = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(currentPosition);
+                if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
+                    if (canAttackPosition(piece, currentPosition, target)) {
+                        attackingPieces.add(piece);
+                    }
+                }
+            }
+        }
+
+        return attackingPieces;
+    }
+
+    private boolean canAttackPosition(ChessPiece piece, ChessPosition currentPosition, ChessPosition targetPosition) {
+        Collection<ChessMove> validMoves = piece.pieceMoves(board, currentPosition);
+        for (ChessMove move : validMoves) {
+            if (move.getEndPosition().equals(targetPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void toggleTeamTurn() {
+        if (TeamTurn == TeamColor.BLACK) {
+            TeamTurn = TeamColor.WHITE;
+        }
+        else {
+            TeamTurn = TeamColor.BLACK;
+        }
     }
 
     /**
