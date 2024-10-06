@@ -35,7 +35,8 @@ public class ChessBoard {
     }
 
 
-    private ChessPiece[][] squares = new ChessPiece[9][9];
+    private  ChessPiece[][] squares = new ChessPiece[9][9]; //difference
+
     public ChessBoard() {}
     public ChessBoard(ChessBoard boardToCopy) {
         for (int i = 0; i < 8; i++) {
@@ -49,9 +50,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        if (position.checkInBounds()) {
-            squares[position.getRow()][position.getColumn()]=piece;
-        }
+        squares[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
@@ -61,29 +60,12 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
-    public ChessPiece getPiece(ChessPosition position) {
-        if (position.checkInBounds()){
-            return squares[position.getRow()][position.getColumn()];
-        }
-        else { return null;}
-    }
-    public ChessPosition getPiecePosition(ChessPiece piece) {
-        //search board for the piece
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (squares[i][j] == piece) {
-                    return new ChessPosition(i + 1, j + 1);
-                }
-            }
-        }
-        return null;
-    }
 
     public void movePiece(ChessMove move) {
-        int startRow = move.getStartPosition().getRow() - 1;
-        int startColumn = move.getStartPosition().getColumn() - 1;
-        int endRow = move.getEndPosition().getRow() - 1;
-        int endColumn = move.getEndPosition().getColumn() - 1;
+        int startRow = move.getStartPosition().getRow();
+        int startColumn = move.getStartPosition().getColumn();
+        int endRow = move.getEndPosition().getRow();
+        int endColumn = move.getEndPosition().getColumn();
 
         ChessPiece startPiece = getPiece(move.getStartPosition());
         // Check for pawn promotion
@@ -102,6 +84,27 @@ public class ChessBoard {
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
+
+    public ChessPiece getPiece(ChessPosition position) {
+        if (position.checkInBounds()){
+            return squares[position.getRow()][position.getColumn()];
+        }
+        else { return null;}
+    }
+
+
+    public ChessPosition getPiecePosition(ChessPiece piece) {
+        //search board for the piece
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j] == piece) {
+                    return new ChessPosition(i + 1, j + 1);
+                }
+            }
+        }
+        return null;
+    }
+
     public void resetBoard() {
         squares = new ChessPiece[9][9];
 

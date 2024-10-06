@@ -165,6 +165,7 @@ public class ChessGame {
 
         return validMoves;
     }
+
     public boolean isInCheck(TeamColor teamColor) {
         if (teamColor == TeamColor.BLACK) {
             TeamColor opposingTeam = TeamColor.WHITE;
@@ -192,11 +193,12 @@ public class ChessGame {
         ChessPosition ourKingPosition = board.getPiecePosition(ourKing);
         // check if the king is under attack
 
-        return !attackersAtSpace(ourKingPosition).isEmpty();
+        return attackersAtSpace(ourKingPosition).isEmpty();
     }
+
     private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
         Collection<ChessPiece> attackingPieces = new ArrayList<>();
-        //if (board.getPiece(target) != null) {
+        if (board.getPiece(target) != null) {
             TeamColor targetTeam = board.getPiece(target).getTeamColor();
 
 
@@ -211,7 +213,7 @@ public class ChessGame {
                     }
                 }
             }
-        //}
+        }
 
         return attackingPieces;
     }
@@ -269,15 +271,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-
-        // Check if king is in danger, cant be stalemate
         if (isInCheck(teamColor)) {
             return false;
         }
-
-        // Get list of our moves
         Collection<ChessMove> validTeamMoves = getValidTeamMoves(teamColor);
-
         return validTeamMoves.isEmpty();
     }
 
