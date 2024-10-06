@@ -49,19 +49,24 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
+
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessPiece umpiece = board.getPiece(startPosition);
+        ChessPiece checkPiece = board.getPiece(startPosition);
         ArrayList<ChessMove> validMoves = new ArrayList<>();
 
-        if (umpiece == null) {
-            return null;
-        }
-        else if (umpiece != null) {
-            Collection<ChessMove> movesToCheck = umpiece.pieceMoves(board, startPosition);
+        // Skip empty pieces
+        if (checkPiece != null) {
+            Collection<ChessMove> movesToCheck = checkPiece.pieceMoves(board, startPosition);
+
+            // Remove any that endanger the king
+            for (ChessMove move : movesToCheck) {
+                if (!moveWillEndangerKing(move)){
+                    validMoves.add(move);
+                }
+            }
         }
 
-
-        throw new RuntimeException("Not implemented");
+        return validMoves;
     }
 
     /**
@@ -70,10 +75,58 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+    public boolean  moveWillEndangerKing(ChessMove move) {
+
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece startPiece = board.getPiece(start);
+        ChessBoard originalBoard = new ChessBoard(board);
+        board.movePiece(move);
+        boolean endangersKing = isInCheck(startPiece.getTeamColor());
+        board = originalBoard;
+
+        return endangersKing;
+    }
+
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
-        throw new InvalidMoveException("Invalid move");
+        // Check if starting piece exists
+        if (board.getPiece(move.getStartPosition()) == null) {
+            throw new InvalidMoveException("Invalid move, no valid piece found");
+        }
+
+        // Check if it's the current teams turn
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != TeamTurn) {
+            throw new InvalidMoveException("Invalid move, wait your turn!");
+        }
+
+        // Before any move can be made, we have to make sure the king is not in check
+        if (isInCheck(board.getPiece(move.getStartPosition()).getTeamColor())) {
+            // Check if the new move is going to remove check
+            if (!moveWillEndangerKing(move)) {
+                throw new InvalidMoveException("Your king is in check, you must resolve that!");
+            }
+        }
+
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>(validMoves(move.getStartPosition()));
+
+        // Check if the desired move is valid
+        if (!possibleMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move: " + move);
+        }
+
+        // Check if moving will endanger the king
+        if (moveWillEndangerKing(move)) {
+            throw new InvalidMoveException("That move puts your king in check!");
+        }
+
+        // Do move here
+        board.movePiece(move);
+
+        // Change turn
+        toggleTeamTurn();
     }
+
 
     /**
      * Determines if the given team is in check
@@ -95,10 +148,23 @@ public class ChessGame {
 
         return pieces;
     }
+    private Collection<ChessMove> getValidTeamMoves(TeamColor teamColor) {
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+
+        Collection<ChessPiece> pieces = getTeamPieces(teamColor);
+
+        for (ChessPiece piece : pieces) {
+            validMoves.addAll(validMoves(board.getPiecePosition(piece)));
+        }
+
+        return validMoves;
+    }
     public boolean isInCheck(TeamColor teamColor) {
-        TeamColor opposingTeam = TeamColor.WHITE;
+        if (teamColor == TeamColor.BLACK) {
+            TeamColor opposingTeam = TeamColor.WHITE;
+        }
         if (teamColor == TeamColor.WHITE) {
-            opposingTeam = TeamColor.BLACK;
+            TeamColor opposingTeam = TeamColor.BLACK;
         }
 
         // get all our remaining pieces
@@ -123,16 +189,19 @@ public class ChessGame {
         return !attackersAtSpace(ourKingPosition).isEmpty();
     }
     private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
-        TeamColor targetTeam = board.getPiece(target).getTeamColor();
         Collection<ChessPiece> attackingPieces = new ArrayList<>();
+        if (board.getPiece(target) != null) {
+            TeamColor targetTeam = board.getPiece(target).getTeamColor();
 
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition currentPosition = new ChessPosition(row, col);
-                ChessPiece piece = board.getPiece(currentPosition);
-                if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
-                    if (canAttackPosition(piece, currentPosition, target)) {
-                        attackingPieces.add(piece);
+
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
+                    ChessPosition currentPosition = new ChessPosition(row, col);
+                    ChessPiece piece = board.getPiece(currentPosition);
+                    if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
+                        if (canAttackPosition(piece, currentPosition, target)) {
+                            attackingPieces.add(piece);
+                        }
                     }
                 }
             }
@@ -166,7 +235,24 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        // If king isn't in check, no checkmate
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+
+        // Get a list of all our teams moves
+        Collection<ChessMove> validTeamMoves = getValidTeamMoves(teamColor);
+
+        // Check if we have any moves that can save us
+        for (ChessMove move : validTeamMoves) {
+            if (!moveWillEndangerKing(move)){
+                return false;
+            }
+        }
+
+        // If no moves are found, checkmate
+        return true;
     }
 
     /**

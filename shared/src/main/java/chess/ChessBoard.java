@@ -36,10 +36,12 @@ public class ChessBoard {
 
 
     private ChessPiece[][] squares = new ChessPiece[9][9];
-    public ChessBoard() {
-
+    public ChessBoard() {}
+    public ChessBoard(ChessBoard boardToCopy) {
+        for (int i = 0; i < 8; i++) {
+            System.arraycopy(boardToCopy.squares[i], 0, squares[i], 0, 8);
+        }
     }
-
     /**
      * Adds a chess piece to the chessboard
      *
