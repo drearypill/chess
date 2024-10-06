@@ -14,9 +14,11 @@ import java.util.Objects;
 public class ChessGame {
     private TeamColor TeamTurn;
     private ChessBoard board;
+
     public ChessGame() {
-        this.board = new ChessBoard();
         this.TeamTurn = TeamColor.WHITE;
+        this.board = new ChessBoard();
+
         board.resetBoard();
     }
 
@@ -54,11 +56,9 @@ public class ChessGame {
 
         // Skip empty pieces
         if (checkPiece != null) {
-            Collection<ChessMove> movesToCheck = checkPiece.pieceMoves(board, startPosition);
-
-            // Remove any that endanger the king
-            for (ChessMove move : movesToCheck) {
-                if (moveWillEndangerKing(move)){
+            Collection<ChessMove> checkingmoves = checkPiece.pieceMoves(board, startPosition);
+            for (ChessMove move : checkingmoves) {
+                if (!moveWillEndangerKing(move)){
                     validMoves.add(move);
                 }
             }
@@ -173,8 +173,8 @@ public class ChessGame {
             TeamColor targetTeam = board.getPiece(target).getTeamColor();
 
 
-            for (int row = 0; row <= 7; row++) {
-                for (int col = 0; col <= 7; col++) {
+            for (int row = 1; row <= 8; row++) {
+                for (int col = 1; col <= 8; col++) {
                     ChessPosition currentPosition = new ChessPosition(row, col);
                     ChessPiece piece = board.getPiece(currentPosition);
                     if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
