@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -16,6 +17,8 @@ public class ChessGame {
     public ChessGame() {
         this.board = new ChessBoard();
         this.TeamTurn = TeamColor.WHITE;
+        board.resetBoard();
+
     }
 
     /**
@@ -31,7 +34,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        this.TeamTurn = team;
+        TeamTurn = team;
     }
 
     /**
@@ -75,6 +78,9 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+
+
+
     public boolean  moveWillEndangerKing(ChessMove move) {
 
         ChessPosition start = move.getStartPosition();
@@ -190,7 +196,7 @@ public class ChessGame {
     }
     private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
         Collection<ChessPiece> attackingPieces = new ArrayList<>();
-        if (board.getPiece(target) != null) {
+        //if (board.getPiece(target) != null) {
             TeamColor targetTeam = board.getPiece(target).getTeamColor();
 
 
@@ -205,7 +211,7 @@ public class ChessGame {
                     }
                 }
             }
-        }
+        //}
 
         return attackingPieces;
     }
@@ -263,7 +269,16 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        // Check if king is in danger, cant be stalemate
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
+        // Get list of our moves
+        Collection<ChessMove> validTeamMoves = getValidTeamMoves(teamColor);
+
+        return validTeamMoves.isEmpty();
     }
 
     /**
@@ -282,6 +297,18 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return this.board;
+        return board;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessGame chessGame)) return false;
+        return getTeamTurn() == chessGame.getTeamTurn() && Objects.equals(getBoard(), chessGame.getBoard());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTeamTurn(), getBoard());
     }
 }
