@@ -20,7 +20,7 @@ public class Server {
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
         userAuthService = new UserAuthService(userDAO, authDAO);
-        gameService = new GameService(gameDAO);
+        gameService = new GameService(gameDAO, authDAO);
         userAuthHandler = new UserAuthHandler(userAuthService);
         gameHandler = new GameHandler(gameService);
     }
