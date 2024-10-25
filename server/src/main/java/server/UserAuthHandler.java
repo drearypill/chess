@@ -2,16 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import service.UserAuthService;
 import spark.Request;
 import spark.Response;
-
-import java.util.UUID;
 
 
 public class UserAuthHandler {
@@ -23,8 +19,10 @@ public class UserAuthHandler {
         try {
             UserData userData = new Gson().fromJson(req.body(), UserData.class);
             AuthData authData = userAuthService.createUser(userData);
+
             resp.status(200);
             return new Gson().toJson(authData);
+
         } catch (DataAccessException e) {
             resp.status(403);
             return "{ \"message\": \"Error: already taken\" }";
@@ -36,7 +34,34 @@ public class UserAuthHandler {
             return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
         }
     }
+
     public Object login(Request req, Response resp) {
-        return null;
+        try {
+            UserData userData = new Gson().fromJson(req.body(), UserData.class);
+            AuthData authData = userAuthService.loginUser(userData);
+            resp.status(200);
+            return new Gson().toJson(authData);
+        } catch (DataAccessException e) {
+            resp.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (Exception e) {
+            resp.status(500);
+            return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+        }
+    }
+
+    public Object logout(Request req, Response resp) {
+        try {
+            String authToken = req.headers("authorization");
+            userAuthService.logoutUser(authToken);
+            resp.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            resp.status(401);
+            return "{ \"message\": \"Error: unauthorized\" }";
+        } catch (Exception e) {
+            resp.status(500);
+            return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+        }
     }
 }

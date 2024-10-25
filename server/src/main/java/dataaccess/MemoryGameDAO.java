@@ -32,6 +32,7 @@ public class MemoryGameDAO implements GameDAO {
         }
         throw new DataAccessException("Game not found, id: " +gameID);
     }
+
     @Override
     public boolean gameExists(int gameID) {
         for (GameData game : db) {
@@ -41,6 +42,7 @@ public class MemoryGameDAO implements GameDAO {
         }
         return false;
     }
+
     @Override
     public void updateGame(GameData game) {
         try {

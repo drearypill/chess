@@ -39,6 +39,7 @@ public class GameService {
      *     Throws UnauthorizedException if invalid authToken
      *     Throws DataAccessException if the request is bad
      */
+
     public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {
         AuthData authData;
         GameData gameData;
