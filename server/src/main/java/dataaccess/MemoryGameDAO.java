@@ -15,10 +15,7 @@ public class MemoryGameDAO implements GameDAO {
         return db;
     }
 
-    @Override
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-        db.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
-    }
+
     @Override
     public void createGame(GameData game) {
         db.add(game);

@@ -36,6 +36,7 @@ public class GameServiceTests {
         Assertions.assertThrows(UnauthorizedException.class, () -> gameService.listGames("badToken"));
     }
 
+
     @Test
     @DisplayName("Proper Join Game")
     void joinGameTestPositive() throws UnauthorizedException, DataAccessException { //
