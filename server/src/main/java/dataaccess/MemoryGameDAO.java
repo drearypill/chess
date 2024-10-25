@@ -1,25 +1,26 @@
 package dataaccess;
 
-import chess.ChessGame;
 import model.GameData;
-import javax.swing.text.SimpleAttributeSet;
 import java.util.HashSet;
 
 public class MemoryGameDAO implements GameDAO {
+
     HashSet<GameData> db;
+
     public MemoryGameDAO() {
         db = HashSet.newHashSet(16);
     }
+
     @Override
     public HashSet<GameData> listGames() {
         return db;
     }
 
-
     @Override
     public void createGame(GameData game) {
         db.add(game);
     }
+
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
         for (GameData game : db) {
@@ -49,6 +50,7 @@ public class MemoryGameDAO implements GameDAO {
             db.add(game);
         }
     }
+
     @Override
     public void clear() {
         db = HashSet.newHashSet(16);

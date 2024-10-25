@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UnauthorizedException;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import java.util.HashSet;
@@ -18,50 +15,60 @@ public class GameService {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
     }
-    public HashSet<GameData> listGames(String authToken) throws DataAccessException {
-        authDAO.getAuth(authToken); // throws if not authorized
+
+    public HashSet<GameData> listGames(String authToken) throws UnauthorizedException {
+        try {
+            authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
         return gameDAO.listGames();
     }
-    public int createGame(String authToken) throws DataAccessException {
-        authDAO.getAuth(authToken); // throws if not authorized
+
+    public int createGame(String authToken) throws UnauthorizedException {
+        try {
+            authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
         int gameID;
         do { // Get random gameIDs until the gameID is not already in use
             gameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(gameID));
+
         gameDAO.createGame(new GameData(gameID, null, null, null, null));
         return gameID;
     }
-    /***
-     * Returns an int based on successfulness of joining the game.
-     *     0 = Success
-     *     1 = Game does not exist or other bad request
-     *     2 = Player color already taken
-     *     Throws UnauthorizedException if invalid authToken
-     *     Throws DataAccessException if the request is bad
-     */
 
-    public int joinGame(String authToken, int gameID, String color) throws UnauthorizedException, DataAccessException {
+
+    public boolean joinGame(String authToken, int gameID, String color) throws UnauthorizedException, BadRequestException {
         AuthData authData;
         GameData gameData;
         try {
             authData = authDAO.getAuth(authToken);
         } catch (DataAccessException e) {
-            throw new UnauthorizedException("Invalid authToken");
+            throw new UnauthorizedException();
         }
-        if (gameDAO.gameExists(gameID)) {
+
+        try {
             gameData = gameDAO.getGame(gameID);
-        } else return 1;
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
         String whiteUser = gameData.whiteUsername();
         String blackUser = gameData.blackUsername();
+
         if (Objects.equals(color, "WHITE")) {
-            if (whiteUser != null) return 2; // Spot taken
+            if (whiteUser != null) return false; // Spot taken
             else whiteUser = authData.username();
         } else if (Objects.equals(color, "BLACK")) {
-            if (blackUser != null) return 2; // Spot taken
+            if (blackUser != null) return false; // Spot taken
             else blackUser = authData.username();
-        } else if (color != null) return 1; // Bad request
+        } else if (color != null) throw new BadRequestException("%s is not a valid team color".formatted(color));
+
         gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
-        return 0;
+        return true;
     }
 
     public void clear() {

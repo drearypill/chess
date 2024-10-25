@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
@@ -16,20 +14,27 @@ public class UserAuthService {
         this.authDAO = authDAO;
     }
 
-    public AuthData createUser(UserData userData) throws DataAccessException {
-        if (userData.username() == null || userData.password() == null) {
-            return null;
+    public AuthData createUser(UserData userData) throws BadRequestException {
+        try {
+            userDAO.createUser(userData);
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
         }
-        userDAO.createUser(userData);
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(userData.username(), authToken);
         authDAO.addAuth(authData);
+
         return authData;
     }
 
-    // if the username DNE or the password is incorrect throws DataAccessException
-    public AuthData loginUser(UserData userData) throws DataAccessException {
-        boolean userAuthenticated = userDAO.authenticateUser(userData.username(), userData.password());
+    public AuthData loginUser(UserData userData) throws UnauthorizedException {
+        boolean userAuthenticated = false;
+        try {
+            userAuthenticated = userDAO.authenticateUser(userData.username(), userData.password());
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
+
         if (userAuthenticated) {
             String authToken = UUID.randomUUID().toString();
             AuthData authData = new AuthData(userData.username(), authToken);
@@ -37,11 +42,16 @@ public class UserAuthService {
             return authData;
         }
         else {
-            throw new DataAccessException("Password is incorrect");
+            throw new UnauthorizedException();
         }
     }
-    public void logoutUser(String authToken) throws DataAccessException {
-        authDAO.getAuth(authToken); // If the auth is not valid ,exception
+
+    public void logoutUser(String authToken) throws UnauthorizedException {
+        try {
+            authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
         authDAO.deleteAuth(authToken);
     }
 

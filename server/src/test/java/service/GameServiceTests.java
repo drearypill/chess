@@ -39,7 +39,7 @@ public class GameServiceTests {
 
     @Test
     @DisplayName("Proper Join Game")
-    void joinGameTestPositive() throws UnauthorizedException, DataAccessException { //
+    void joinGameTestPositive() throws UnauthorizedException, BadRequestException, DataAccessException {
         int gameID = gameService.createGame(authData.authToken());
         gameService.joinGame(authData.authToken(), gameID, "WHITE");
         GameData expectedGameData = new GameData(gameID, authData.username(), null, null, null);

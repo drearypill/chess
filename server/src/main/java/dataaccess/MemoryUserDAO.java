@@ -1,11 +1,11 @@
 package dataaccess;
 
-import javax.xml.crypto.Data;
 import model.UserData;
 import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO{
     private HashSet<UserData> db;
+
     public MemoryUserDAO() {
         db = HashSet.newHashSet(16);
     }
@@ -19,8 +19,6 @@ public class MemoryUserDAO implements UserDAO{
         }
         throw new DataAccessException("User not found: " + username);
     }
-
-
 
     @Override
     public void createUser(UserData user) throws DataAccessException {

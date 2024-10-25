@@ -7,6 +7,7 @@ import java.util.HashSet;
 public class MemoryAuthDAO implements AuthDAO {
 
     HashSet<AuthData> db;
+
     public MemoryAuthDAO() {
         db = HashSet.newHashSet(16);
     }
@@ -15,6 +16,7 @@ public class MemoryAuthDAO implements AuthDAO {
     public void addAuth(AuthData authData) {
         db.add(authData);
     }
+
     @Override
     public void deleteAuth(String authToken) {
         for (AuthData authData : db) {
@@ -24,6 +26,7 @@ public class MemoryAuthDAO implements AuthDAO {
             }
         }
     }
+
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         for (AuthData authData : db) {
