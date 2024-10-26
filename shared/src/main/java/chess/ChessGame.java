@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -78,8 +77,8 @@ public class ChessGame {
 
     public boolean  moveWillEndangerKing(ChessMove move) {
 
-        ChessPosition start = move.getStartPosition();
-        ChessPosition end = move.getEndPosition();
+        ChessPosition start = move.startPosition();
+        ChessPosition end = move.endPosition();
         ChessPiece startPiece = board.getPiece(start);
         ChessBoard originalBoard = new ChessBoard(board);
         board.movePiece(move);
@@ -92,24 +91,24 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
         // Check if starting piece exists
-        if (board.getPiece(move.getStartPosition()) == null) {
+        if (board.getPiece(move.startPosition()) == null) {
             throw new InvalidMoveException("Invalid move, no valid piece found");
         }
 
         // Check if it's the current teams turn
-        if (board.getPiece(move.getStartPosition()).getTeamColor() != TeamTurn) {
+        if (board.getPiece(move.startPosition()).getTeamColor() != TeamTurn) {
             throw new InvalidMoveException("Invalid move, wait your turn!");
         }
 
         // Before any move can be made, we have to make sure the king is not in check
-        if (isInCheck(board.getPiece(move.getStartPosition()).getTeamColor())) {
+        if (isInCheck(board.getPiece(move.startPosition()).getTeamColor())) {
             // Check if the new move is going to remove check
             if (!moveWillEndangerKing(move)) {
                 throw new InvalidMoveException("Your king is in check, you must resolve that!");
             }
         }
 
-        ArrayList<ChessMove> possibleMoves = new ArrayList<>(validMoves(move.getStartPosition()));
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>(validMoves(move.startPosition()));
 
         // Check if the desired move is valid
         if (!possibleMoves.contains(move)) {
@@ -192,7 +191,7 @@ public class ChessGame {
     private boolean canAttackPosition(ChessPiece piece, ChessPosition currentPosition, ChessPosition targetPosition) {
         Collection<ChessMove> validMoves = piece.pieceMoves(board, currentPosition);
         for (ChessMove move : validMoves) {
-            if (move.getEndPosition().equals(targetPosition)) {
+            if (move.endPosition().equals(targetPosition)) {
                 return true;
             }
         }

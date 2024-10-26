@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -42,18 +41,18 @@ public class ChessBoard {
     }
 
     public void movePiece(ChessMove move) {
-        int startRow = move.getStartPosition().getRow() - 1;
-        int startColumn = move.getStartPosition().getColumn() - 1;
+        int startRow = move.startPosition().getRow() - 1;
+        int startColumn = move.startPosition().getColumn() - 1;
 
         // Where it will end up
-        int endRow = move.getEndPosition().getRow() - 1;
-        int endColumn = move.getEndPosition().getColumn() - 1;
+        int endRow = move.endPosition().getRow() - 1;
+        int endColumn = move.endPosition().getColumn() - 1;
 
         // Make the move
-        ChessPiece startPiece = getPiece(move.getStartPosition());
+        ChessPiece startPiece = getPiece(move.startPosition());
         // Check for pawn promotion
-        if (move.getPromotionPiece() != null) {
-            ChessPiece promotionPiece = new ChessPiece(startPiece.getTeamColor(), move.getPromotionPiece());
+        if (move.promotionPiece() != null) {
+            ChessPiece promotionPiece = new ChessPiece(startPiece.getTeamColor(), move.promotionPiece());
             squares[endRow][endColumn] = promotionPiece;
         }
         else {
@@ -81,8 +80,6 @@ public class ChessBoard {
     }
 
     public void resetBoard() {
-        //squares = new ChessPiece[9][9];
-
         //Add all white pieces
         addPiece(new ChessPosition(1, 1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
         addPiece(new ChessPosition(1, 2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
