@@ -59,7 +59,7 @@ public record ChessPiece(ChessGame.TeamColor pieceColor, chess.ChessPiece.PieceT
         Collection<ChessMove> places = new ArrayList<>();
         switch (board.getPiece(myPosition).getPieceType()) {
             case KING -> {
-                PieceMoves.getKingMoves(board, myPosition, places);
+                PieceMoves.getKingMoves(board, myPosition, places, pieceColor);
             }
             case BISHOP -> PieceMoves.getDiagonalMoves(board, myPosition, places);
             case ROOK -> PieceMoves.getStraightMoves(board, myPosition, places);

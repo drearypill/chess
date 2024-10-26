@@ -125,30 +125,25 @@ public class PieceMoves {
         }
     }
 
-    public static Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
+    public static void getKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places, ChessGame.TeamColor pieceColor) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        ChessPiece movingPiece = board.getPiece(myPosition);
 
-        // Define all possible king moves as row, col offsets
-        int[][] kingMoves = {
-                {1, 0}, {1, 1}, {1, -1},
-                {-1, 0}, {-1, 1}, {-1, -1},
-                {0, 1}, {0, -1}
-        };
+        // Check all adjacent squares
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                // Skip the (0,0) position (the king's current position)
+                if (i == 0 && j == 0) continue;
 
-        // Check each adjacent position
-        for (int[] move : kingMoves) {
-            ChessPosition spot = new ChessPosition(row + move[0], col + move[1]);
-            if (spot.checkInBounds()) {
-                ChessPiece collisionPiece = board.getPiece(spot);
-                // Add the move if the spot is empty or has an opponent piece
-                if (collisionPiece == null || collisionPiece.getPieceType() != movingPiece.getPieceType()) {
-                    places.add(new ChessMove(myPosition, spot, null));
+                ChessPosition spot = new ChessPosition(row + i, col + j);
+                if (spot.checkInBounds()) {
+                    ChessPiece collisionPiece = board.getPiece(spot);
+                    if (collisionPiece == null || collisionPiece.getTeamColor() != pieceColor) {
+                        places.add(new ChessMove(myPosition, spot, null));
+                    }
                 }
             }
         }
-        return places;
     }
 
 
