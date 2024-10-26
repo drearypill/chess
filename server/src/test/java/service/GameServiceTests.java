@@ -16,7 +16,7 @@ public class GameServiceTests {
         gameDAO = new MemoryGameDAO();
         authDAO = new MemoryAuthDAO();
         gameService = new GameService(gameDAO, authDAO);
-        authData = new AuthData("Username", "authToken");
+        authData = new AuthData("authToken", "Username");
         authDAO.addAuth(authData);
     }
     @BeforeEach

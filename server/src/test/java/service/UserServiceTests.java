@@ -42,6 +42,7 @@ public class UserServiceTests {
         AuthData authData = userService.loginUser(defaultUser);
         Assertions.assertEquals(authDAO.getAuth(authData.authToken()), authData);
     }
+
     @Test
     @DisplayName("Improper Login User")
     void loginUserTestNegative() throws BadRequestException {
