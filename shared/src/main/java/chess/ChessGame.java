@@ -11,11 +11,11 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor TeamTurn;
+    private TeamColor teamTurn;
     private ChessBoard board;
 
     public ChessGame() {
-        this.TeamTurn = TeamColor.WHITE;
+        this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
 
         board.resetBoard();
@@ -24,14 +24,15 @@ public class ChessGame {
     /**
      * @return Which team's turn it is
      */
-    public TeamColor getTeamTurn() {return this.TeamTurn;}
+    public TeamColor getTeamTurn() {return this.teamTurn;}
 
     /**
      * Set's which teams turn it is
      *
      * @param team the team whose turn it is
      */
-    public void setTeamTurn(TeamColor team) {TeamTurn = team;}
+    public void setTeamTurn(TeamColor team) {
+        teamTurn = team;}
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -95,7 +96,7 @@ public class ChessGame {
         }
 
         // Check if it's the current teams turn
-        if (board.getPiece(move.startPosition()).getTeamColor() != TeamTurn) {
+        if (board.getPiece(move.startPosition()).getTeamColor() != teamTurn) {
             throw new InvalidMoveException("Invalid move, wait your turn!");
         }
 
@@ -136,13 +137,6 @@ public class ChessGame {
 
 
     public boolean isInCheck(TeamColor teamColor) {
-//        if (teamColor == TeamColor.BLACK) {
-//            TeamColor opposingTeam = TeamColor.WHITE;
-//        }
-//        if (teamColor == TeamColor.WHITE) {
-//            TeamColor opposingTeam = TeamColor.BLACK;
-//        }
-
         // get all our remaining pieces
         Collection<ChessPiece> ourPieces = getTeamPieces(teamColor);
 
@@ -286,11 +280,11 @@ public class ChessGame {
     }
 
     private void toggleTeamTurn() {
-        if (TeamTurn == TeamColor.BLACK) {
-            TeamTurn = TeamColor.WHITE;
+        if (teamTurn == TeamColor.BLACK) {
+            teamTurn = TeamColor.WHITE;
         }
         else {
-            TeamTurn = TeamColor.BLACK;
+            teamTurn = TeamColor.BLACK;
         }
     }
 
