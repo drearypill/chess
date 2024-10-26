@@ -3,8 +3,8 @@ package chess;
 import java.util.Collection;
 
 public class PieceMoves {
-    public static Collection<ChessMove> getDiagonalMoves(ChessBoard board, ChessPosition myPosition,
-                                                         Collection<ChessMove> places) {
+    public static void getDiagonalMoves(ChessBoard board, ChessPosition myPosition,
+                                        Collection<ChessMove> places) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         ChessPiece movingPiece = board.getPiece(myPosition);
@@ -15,10 +15,9 @@ public class PieceMoves {
         for (int[] dir : directions) {
             addMovesInDirection(board, myPosition, places, movingPiece, row, col, dir[0], dir[1]);
         }
-        return places;
     }
 
-    public static Collection<ChessMove> getStraightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
+    public static void getStraightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         ChessPiece movingPiece = board.getPiece(myPosition);
@@ -29,7 +28,6 @@ public class PieceMoves {
         for (int[] dir : directions) {
             addMovesInDirection(board, myPosition, places, movingPiece, row, col, dir[0], dir[1]);
         }
-        return places;
     }
 
     // Helper method to add moves in a given direction
@@ -52,8 +50,8 @@ public class PieceMoves {
     }
 
 
-    public static Collection<ChessMove> getPawnMoves(ChessBoard board, ChessPosition myPosition,
-                                                     Collection<ChessMove> places, ChessGame.TeamColor color) {
+    public static void getPawnMoves(ChessBoard board, ChessPosition myPosition,
+                                    Collection<ChessMove> places, ChessGame.TeamColor color) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         int direction = (color == ChessGame.TeamColor.WHITE) ? 1 : -1;
@@ -62,7 +60,6 @@ public class PieceMoves {
         addForwardMoves(board, myPosition, places, row, col, direction, initialRow);
         addCaptureMoves(board, myPosition, places, row, col, direction);
 
-        return places;
     }
 
     private static void addForwardMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places,
@@ -104,7 +101,7 @@ public class PieceMoves {
         }
     }
 
-    public static Collection<ChessMove> getKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
+    public static void getKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         ChessPiece movingPiece = board.getPiece(myPosition);
@@ -126,7 +123,6 @@ public class PieceMoves {
                 }
             }
         }
-        return places;
     }
 
 

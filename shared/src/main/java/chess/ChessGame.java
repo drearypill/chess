@@ -55,8 +55,8 @@ public class ChessGame {
 
         // Skip empty pieces
         if (checkPiece != null) {
-            Collection<ChessMove> checkingmoves = checkPiece.pieceMoves(board, startPosition);
-            for (ChessMove move : checkingmoves) {
+            Collection<ChessMove> checkingMoves = checkPiece.pieceMoves(board, startPosition);
+            for (ChessMove move : checkingMoves) {
                 if (!moveWillEndangerKing(move)){
                     validMoves.add(move);
                 }
@@ -70,7 +70,7 @@ public class ChessGame {
      * Makes a move in a chess game
      *
      * @param move chess move to preform
-     * @throws InvalidMoveException if move is invalid
+     * 
      */
 
 
@@ -78,7 +78,6 @@ public class ChessGame {
     public boolean  moveWillEndangerKing(ChessMove move) {
 
         ChessPosition start = move.startPosition();
-        ChessPosition end = move.endPosition();
         ChessPiece startPiece = board.getPiece(start);
         ChessBoard originalBoard = new ChessBoard(board);
         board.movePiece(move);
@@ -137,12 +136,12 @@ public class ChessGame {
 
 
     public boolean isInCheck(TeamColor teamColor) {
-        if (teamColor == TeamColor.BLACK) {
-            TeamColor opposingTeam = TeamColor.WHITE;
-        }
-        if (teamColor == TeamColor.WHITE) {
-            TeamColor opposingTeam = TeamColor.BLACK;
-        }
+//        if (teamColor == TeamColor.BLACK) {
+//            TeamColor opposingTeam = TeamColor.WHITE;
+//        }
+//        if (teamColor == TeamColor.WHITE) {
+//            TeamColor opposingTeam = TeamColor.BLACK;
+//        }
 
         // get all our remaining pieces
         Collection<ChessPiece> ourPieces = getTeamPieces(teamColor);
