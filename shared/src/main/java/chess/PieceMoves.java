@@ -132,11 +132,8 @@ public class PieceMoves {
         // Check all adjacent squares
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                // Skip the (0,0) position (the king's current position)
-                if (i == 0 && j == 0) continue;
-
                 ChessPosition spot = new ChessPosition(row + i, col + j);
-                if (spot.checkInBounds()) {
+                if (spot.checkInBounds() && !(i == 0 && j == 0)) {
                     ChessPiece collisionPiece = board.getPiece(spot);
                     if (collisionPiece == null || collisionPiece.getTeamColor() != pieceColor) {
                         places.add(new ChessMove(myPosition, spot, null));

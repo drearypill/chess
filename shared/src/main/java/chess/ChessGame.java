@@ -171,10 +171,8 @@ public class ChessGame {
                 for (int col = 1; col <= 8; col++) {
                     ChessPosition currentPosition = new ChessPosition(row, col);
                     ChessPiece piece = board.getPiece(currentPosition);
-                    if (isOpponentPiece(piece, targetTeam)) {
-                        if (canAttackPosition(piece, currentPosition, target)) {
-                            attackingPieces.add(piece);
-                        }
+                    if (isOpponentPiece(piece, targetTeam) && (canAttackPosition(piece, currentPosition, target))) {
+                        attackingPieces.add(piece);
                     }
                 }
             }
