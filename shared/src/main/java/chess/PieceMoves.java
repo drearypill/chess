@@ -43,7 +43,7 @@ public class PieceMoves {
             if (collisionPiece == null) {
                 places.add(new ChessMove(myPosition, spot, null));
             } else {
-                if (collisionPiece.pieceColor != movingPiece.pieceColor) {
+                if (collisionPiece.getTeamColor() != movingPiece.getTeamColor()) {
                     places.add(new ChessMove(myPosition, spot, null));
                 }
                 break;  // Stop moving in this direction after encountering any piece
@@ -85,7 +85,7 @@ public class PieceMoves {
             ChessPosition captureSpot = new ChessPosition(row + direction, col + side);
             if (captureSpot.checkInBounds()) {
                 ChessPiece collisionPiece = board.getPiece(captureSpot);
-                if (collisionPiece != null && collisionPiece.pieceColor != board.getPiece(myPosition).pieceColor) {
+                if (collisionPiece != null && collisionPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                     addPromotionOrStandardMove(places, myPosition, captureSpot, row, direction);
                 }
             }
@@ -103,6 +103,32 @@ public class PieceMoves {
             places.add(new ChessMove(from, to, null));
         }
     }
+
+    public static Collection<ChessMove> getKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessPiece movingPiece = board.getPiece(myPosition);
+
+        // Define all possible knight moves as row, col offsets
+        int[][] knightMoves = {
+                {1, -2}, {1, 2}, {2, -1}, {2, 1},
+                {-1, -2}, {-1, 2}, {-2, -1}, {-2, 1}
+        };
+
+        // Check each knight move position
+        for (int[] move : knightMoves) {
+            ChessPosition spot = new ChessPosition(row + move[0], col + move[1]);
+            if (spot.checkInBounds()) {
+                ChessPiece collisionPiece = board.getPiece(spot);
+                // Add the move if the spot is empty or has an opponent piece
+                if (collisionPiece == null || collisionPiece.getTeamColor() != movingPiece.getTeamColor()) {
+                    places.add(new ChessMove(myPosition, spot, null));
+                }
+            }
+        }
+        return places;
+    }
+
 
 
 
