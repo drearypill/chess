@@ -69,4 +69,12 @@ public class GameServiceTests {
         Assertions.assertThrows(BadRequestException.class, () -> gameService.joinGame(authData.authToken(), 11111, "WHITE"));
         Assertions.assertThrows(BadRequestException.class, () -> gameService.joinGame(authData.authToken(), gameID, "INVALID"));
     }
+
+    @Test
+    @DisplayName("Proper Clear DB")
+    void clearTestPositive() throws UnauthorizedException {
+        gameService.createGame(authData.authToken());
+        gameService.clear();
+        Assertions.assertEquals(gameDAO.listGames(), HashSet.newHashSet(16));
+    }
 }

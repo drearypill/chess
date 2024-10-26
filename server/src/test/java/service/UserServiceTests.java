@@ -72,9 +72,4 @@ public class UserServiceTests {
         Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser(defaultUser.username()));
         Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(auth.authToken()));
     }
-    @Test
-    @DisplayName("Improper Clear DB")
-    void clearTestNegative() throws BadRequestException {
-        Assertions.assertDoesNotThrow(() -> userService.clear());
-    }
 }
