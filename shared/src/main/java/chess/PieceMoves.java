@@ -35,7 +35,7 @@ public class PieceMoves {
                                             ChessPiece movingPiece, int row, int col, int rowInc, int colInc) {
         for (int i = 1; i < 8; i++) {  // Move up to 7 squares in the direction
             ChessPosition spot = new ChessPosition(row + i * rowInc, col + i * colInc);
-            if (!spot.checkInBounds()) break;
+            if (!spot.checkInBounds()) {break;}
 
             ChessPiece collisionPiece = board.getPiece(spot);
             if (collisionPiece == null) {
@@ -124,6 +124,33 @@ public class PieceMoves {
             }
         }
     }
+
+    public static Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> places) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ChessPiece movingPiece = board.getPiece(myPosition);
+
+        // Define all possible king moves as row, col offsets
+        int[][] kingMoves = {
+                {1, 0}, {1, 1}, {1, -1},
+                {-1, 0}, {-1, 1}, {-1, -1},
+                {0, 1}, {0, -1}
+        };
+
+        // Check each adjacent position
+        for (int[] move : kingMoves) {
+            ChessPosition spot = new ChessPosition(row + move[0], col + move[1]);
+            if (spot.checkInBounds()) {
+                ChessPiece collisionPiece = board.getPiece(spot);
+                // Add the move if the spot is empty or has an opponent piece
+                if (collisionPiece == null || collisionPiece.getPieceType() != movingPiece.getPieceType()) {
+                    places.add(new ChessMove(myPosition, spot, null));
+                }
+            }
+        }
+        return places;
+    }
+
 
 
 

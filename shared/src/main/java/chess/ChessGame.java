@@ -161,15 +161,17 @@ public class ChessGame {
 
     private Collection<ChessPiece> attackersAtSpace(ChessPosition target) {
         Collection<ChessPiece> attackingPieces = new ArrayList<>();
-        if (board.getPiece(target) != null) {
-            TeamColor targetTeam = board.getPiece(target).getTeamColor();
+        ChessPiece targetPiece = board.getPiece(target);
 
-
+        // Check if there is a piece at the target position
+        if (targetPiece != null) {
+            TeamColor targetTeam = targetPiece.getTeamColor();
+            // Iterate through the board
             for (int row = 1; row <= 8; row++) {
                 for (int col = 1; col <= 8; col++) {
                     ChessPosition currentPosition = new ChessPosition(row, col);
                     ChessPiece piece = board.getPiece(currentPosition);
-                    if (piece != null && !piece.getTeamColor().equals(targetTeam)) {
+                    if (isOpponentPiece(piece, targetTeam)) {
                         if (canAttackPosition(piece, currentPosition, target)) {
                             attackingPieces.add(piece);
                         }
@@ -179,6 +181,11 @@ public class ChessGame {
         }
 
         return attackingPieces;
+    }
+
+    // Helper method to check if the piece is an opponent's piece
+    private boolean isOpponentPiece(ChessPiece piece, TeamColor targetTeam) {
+        return piece != null && !piece.getTeamColor().equals(targetTeam);
     }
 
     private boolean canAttackPosition(ChessPiece piece, ChessPosition currentPosition, ChessPosition targetPosition) {
@@ -290,8 +297,8 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessGame chessGame)) return false;
+        if (this == o) {return true;}
+        if (!(o instanceof ChessGame chessGame)) {return false;}
         return getTeamTurn() == chessGame.getTeamTurn() && Objects.equals(getBoard(), chessGame.getBoard());
     }
 

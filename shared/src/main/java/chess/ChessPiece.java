@@ -14,8 +14,12 @@ public record ChessPiece(ChessGame.TeamColor pieceColor, chess.ChessPiece.PieceT
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ChessPiece that)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChessPiece that)) {
+            return false;
+        }
         return type == that.type && pieceColor == that.pieceColor;
     }
 
@@ -55,20 +59,7 @@ public record ChessPiece(ChessGame.TeamColor pieceColor, chess.ChessPiece.PieceT
         Collection<ChessMove> places = new ArrayList<>();
         switch (board.getPiece(myPosition).getPieceType()) {
             case KING -> {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-                for (int i = -1; i < 2; i++) {
-                    for (int j = -1; j < 2; j++) {
-                        ChessPosition spot = new ChessPosition(row + i, col + j);
-                        if (spot.checkInBounds()) {
-                            ChessPiece collisionPiece = board.getPiece(spot);
-                            if (collisionPiece == null || collisionPiece.pieceColor != this.pieceColor) {
-                                places.add(new ChessMove(myPosition, spot, null));
-                            }
-                        }
-                    }
-                }
-                return places;
+                PieceMoves.getKingMoves(board, myPosition, places);
             }
             case BISHOP -> PieceMoves.getDiagonalMoves(board, myPosition, places);
             case ROOK -> PieceMoves.getStraightMoves(board, myPosition, places);
