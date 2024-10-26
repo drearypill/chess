@@ -26,6 +26,21 @@ public record ChessMove(ChessPosition startPosition, ChessPosition endPosition, 
     }
 
     /**
+     * @return ChessPosition of starting location
+     */
+    public ChessPosition getStartPosition() {
+        return startPosition;
+    }
+
+    /**
+     * @return ChessPosition of ending location
+     */
+    public ChessPosition getEndPosition() {
+        return endPosition;
+    }
+
+
+    /**
      * Gets the type of piece to promote a pawn to if pawn promotion is part of this
      * chess move
      *
