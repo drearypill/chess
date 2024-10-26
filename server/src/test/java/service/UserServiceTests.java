@@ -3,7 +3,6 @@ import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import service.UserAuthService;
 
 public class UserServiceTests {
     static UserAuthService userService;
@@ -61,7 +60,7 @@ public class UserServiceTests {
     @Test
     @DisplayName("Improper Logout User")
     void logoutUserTestNegative() throws BadRequestException {
-        AuthData auth = userService.createUser(defaultUser);
+        userService.createUser(defaultUser);
         Assertions.assertThrows(UnauthorizedException.class, () -> userService.logoutUser("badAuthToken"));
     }
     @Test

@@ -28,7 +28,7 @@ public class UserAuthService {
     }
 
     public AuthData loginUser(UserData userData) throws UnauthorizedException {
-        boolean userAuthenticated = false;
+        boolean userAuthenticated;
         try {
             userAuthenticated = userDAO.authenticateUser(userData.username(), userData.password());
         } catch (DataAccessException e) {

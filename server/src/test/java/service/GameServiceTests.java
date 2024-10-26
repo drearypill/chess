@@ -31,11 +31,13 @@ public class GameServiceTests {
         int gameID2 = gameService.createGame(authData.authToken());
         Assertions.assertNotEquals(gameID1, gameID2);
     }
+
     @Test
     @DisplayName("Create Invalid Game")
-    void createGameTestNegative() throws UnauthorizedException {
+    void createGameTestNegative() {
         Assertions.assertThrows(UnauthorizedException.class, () -> gameService.createGame("badToken"));
     }
+
     @Test
     @DisplayName("Proper List Games")
     void listGamesTestPositive() throws UnauthorizedException {
