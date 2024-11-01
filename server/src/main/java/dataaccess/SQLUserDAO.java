@@ -3,11 +3,13 @@ package dataaccess;
 import model.UserData;
 import java.sql.SQLException;
 
+import static dataaccess.DatabaseManager.DATABASE_NAME;
+
 
 public class SQLUserDAO implements UserDAO {
     public SQLUserDAO() {
         try (var conn = DatabaseManager.getConnection()) {
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             var createTestTable = """            
                     CREATE TABLE if NOT EXISTS user (
                                     username VARCHAR(255) NOT NULL,

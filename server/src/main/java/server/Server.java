@@ -17,7 +17,7 @@ public class Server {
 
     public Server() {
         userDAO = new SQLUserDAO();
-        authDAO = new MemoryAuthDAO();
+        authDAO = new SQLAuthDAO();
         gameDAO = new MemoryGameDAO();
 
         userAuthService = new UserAuthService(userDAO, authDAO);
@@ -25,6 +25,7 @@ public class Server {
 
         userAuthHandler = new UserAuthHandler(userAuthService);
         gameHandler = new GameHandler(gameService);
+
     }
 
     public int run(int desiredPort) {
