@@ -25,7 +25,7 @@ public class GameService {
         return gameDAO.listGames();
     }
 
-    public int createGame(String authToken, String gameName) throws UnauthorizedException {
+    public int createGame(String authToken, String gameName) throws UnauthorizedException, BadRequestException {
         try {
             authDAO.getAuth(authToken);
         } catch (DataAccessException e) {
@@ -36,7 +36,11 @@ public class GameService {
             gameID = ThreadLocalRandom.current().nextInt(1, 10000);
         } while (gameDAO.gameExists(gameID));
 
-        gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
+        try {
+            gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         return gameID;
     }
 
@@ -77,7 +81,11 @@ public class GameService {
             throw new BadRequestException("%s is not a valid team color".formatted(color));
         }
 
-        gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
+        try {
+            gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         return true;
     }
 
