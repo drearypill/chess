@@ -58,6 +58,14 @@ class SQLUserDAOTest {
         assertTrue(BCrypt.checkpw(defaultUser.password(), resultPassword));
         assertEquals(defaultUser.email(), resultEmail);
     }
+
+    @Test
+    void createUserNegative() throws DataAccessException {
+        dao.createUser(defaultUser);
+        assertThrows(DataAccessException.class, () -> dao.createUser(defaultUser), "Expected an exception " +
+                                                                                   "when creating a duplicate user.");
+    }
+
     @Test
     void getUserPositive() throws DataAccessException {
         dao.createUser(defaultUser);
