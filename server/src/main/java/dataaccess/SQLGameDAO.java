@@ -3,6 +3,8 @@ import chess.ChessGame;
 import model.GameData;
 import java.sql.SQLException;
 import java.util.HashSet;
+import com.google.gson.Gson;
+
 
 import static dataaccess.DatabaseManager.DATABASE_NAME;
 
@@ -37,8 +39,8 @@ public class SQLGameDAO implements GameDAO {
                         var whiteUsername = results.getString("whiteUsername");
                         var blackUsername = results.getString("blackUsername");
                         var gameName = results.getString("gameName");
-                        var chessGame = results.getString("chessGame"); //TODO: deserialize
-                        games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, new ChessGame()));
+                        var chessGame = deserializeGame(results.getString("chessGame"));
+                        games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame));
                     }
                 }
             }
@@ -55,7 +57,7 @@ public class SQLGameDAO implements GameDAO {
                 statement.setString(2, game.whiteUsername());
                 statement.setString(3, game.blackUsername());
                 statement.setString(4, game.gameName());
-                statement.setString(5, game.game() != null ? game.game().toString() : null); //TODO: serialize game instead of toString()
+                statement.setString(5, serializeGame(game.game()));
                 statement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
@@ -72,8 +74,8 @@ public class SQLGameDAO implements GameDAO {
                     var whiteUsername = results.getString("whiteUsername");
                     var blackUsername = results.getString("blackUsername");
                     var gameName = results.getString("gameName");
-                    var chessGame = results.getString("chessGame"); //TODO: deserialize
-                    return new GameData(gameID, whiteUsername, blackUsername, gameName, new ChessGame());
+                    var chessGame = deserializeGame(results.getString("chessGame"));
+                    return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
                 }
             }
         } catch (SQLException e) {
@@ -100,7 +102,7 @@ public class SQLGameDAO implements GameDAO {
                 statement.setString(1, game.whiteUsername());
                 statement.setString(2, game.blackUsername());
                 statement.setString(3, game.gameName());
-                statement.setString(4, game.game().toString()); //TODO: serialize game instead of toString()
+                statement.setString(4, serializeGame(game.game()));
                 statement.setInt(5, game.gameID());
                 statement.executeUpdate();
             }
@@ -119,5 +121,12 @@ public class SQLGameDAO implements GameDAO {
         } catch (SQLException | DataAccessException e) {
             return;
         }
+    }
+
+    private String serializeGame(ChessGame game) {
+        return new Gson().toJson(game);
+    }
+    private ChessGame deserializeGame(String serializedGame) {
+        return new Gson().fromJson(serializedGame, ChessGame.class);
     }
 }
