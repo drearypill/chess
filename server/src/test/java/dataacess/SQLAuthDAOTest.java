@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SQLAuthDAOTest {
 
+
     AuthDAO dao;
     AuthData defaultAuth;
     @BeforeEach
