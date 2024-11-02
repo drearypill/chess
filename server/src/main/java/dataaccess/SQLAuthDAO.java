@@ -8,6 +8,9 @@ import static dataaccess.DatabaseManager.DATABASE_NAME;
 
 public class SQLAuthDAO implements AuthDAO {
     public SQLAuthDAO() {
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
         try (var conn = DatabaseManager.getConnection()) {
             conn.setCatalog(DATABASE_NAME);
             var createTestTable = """            

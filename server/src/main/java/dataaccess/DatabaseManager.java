@@ -68,7 +68,7 @@ public class DatabaseManager {
     public static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-//            conn.setCatalog(DATABASE_NAME);
+            conn.setCatalog(DATABASE_NAME);
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

@@ -9,6 +9,9 @@ import static dataaccess.DatabaseManager.DATABASE_NAME;
 
 public class SQLUserDAO implements UserDAO {
     public SQLUserDAO() {
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
         try (var conn = DatabaseManager.getConnection()) {
             conn.setCatalog(DATABASE_NAME);
             var createTestTable = """            
@@ -48,7 +51,7 @@ public class SQLUserDAO implements UserDAO {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)")) {
                 statement.setString(1, user.username());
-                statement.setString(2, user.password());
+                statement.setString(2, hashPassword(user.password()));
                 statement.setString(3, user.email());
                 statement.executeUpdate();
             }
@@ -76,12 +79,10 @@ public class SQLUserDAO implements UserDAO {
     }
 
     private String hashPassword(String password) {
-        BCrypt encoder = new BCrypt();
-        return encoder.hashpw(password, BCrypt.gensalt());
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     private boolean passwordMatches(String rawPassword, String hashedPassword) {
-        BCrypt encoder = new BCrypt();
-        return encoder.checkpw(rawPassword, hashedPassword);
+        return BCrypt.checkpw(rawPassword, hashedPassword);
     }
 }
