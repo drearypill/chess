@@ -31,6 +31,11 @@ public class DatabaseManager {
         } catch (Exception ex) {
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
         }
+        try {
+            createDatabase();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -63,7 +68,7 @@ public class DatabaseManager {
     public static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog(DATABASE_NAME);
+//            conn.setCatalog(DATABASE_NAME);
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());

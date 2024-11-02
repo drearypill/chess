@@ -76,7 +76,7 @@ public class GameServiceTests {
     @DisplayName("Proper Clear DB")
     void clearTestPositive() throws UnauthorizedException {
         gameService.createGame(authData.authToken(), "name");
-        gameService.clear();
+         gameService.clear();
         Assertions.assertEquals(gameDAO.listGames(), HashSet.newHashSet(16));
     }
 }

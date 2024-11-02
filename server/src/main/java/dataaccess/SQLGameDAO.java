@@ -4,10 +4,12 @@ import model.GameData;
 import java.sql.SQLException;
 import java.util.HashSet;
 
+import static dataaccess.DatabaseManager.DATABASE_NAME;
+
 public class SQLGameDAO implements GameDAO {
     public SQLGameDAO() {
         try (var conn = DatabaseManager.getConnection()) {
-            conn.setCatalog("chess");
+            conn.setCatalog(DATABASE_NAME);
             var createTestTable = """            
                     CREATE TABLE if NOT EXISTS game (
                                     gameID INT NOT NULL,
