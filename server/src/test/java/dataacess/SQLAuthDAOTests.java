@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SQLAuthDAOTest {
+class SQLAuthDAOTests {
 
 
     AuthDAO dao;

@@ -15,7 +15,7 @@ import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class SQLGameDAOTest {
+class SQLGameDAOTests {
 
     GameDAO dao;
     GameData defaultGameData;

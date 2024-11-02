@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 
-class SQLUserDAOTest {
+class SQLUserDAOTests {
     UserDAO dao;
     UserData defaultUser;
 
