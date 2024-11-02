@@ -72,14 +72,7 @@ class SQLAuthDAOTest {
     void deleteAuthPositive() throws DataAccessException, SQLException {
         dao.addAuth(defaultAuth);
         dao.deleteAuth(defaultAuth.authToken());
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT username, authToken FROM auth WHERE username=?")) {
-                statement.setString(1, defaultAuth.username());
-                try (var results = statement.executeQuery()) {
-                    assertFalse(results.next()); //There should be no elements
-                }
-            }
-        }
+        assertNoAuthEntries(defaultAuth.username());
     }
 
     @Test
@@ -104,13 +97,20 @@ class SQLAuthDAOTest {
     void clear() throws DataAccessException, SQLException {
         dao.addAuth(defaultAuth);
         dao.clear();
+        assertNoAuthEntries(defaultAuth.username());
+    }
+
+    private void assertNoAuthEntries(String username) throws SQLException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("SELECT username, authToken FROM auth WHERE username=?")) {
-                statement.setString(1, defaultAuth.username());
+                statement.setString(1, username);
                 try (var results = statement.executeQuery()) {
-                    assertFalse(results.next()); //There should be no elements
+                    assertFalse(results.next()); // There should be no elements
                 }
             }
+        } catch (DataAccessException e) {
+            throw new AssertionError("Database connection or query failed", e);
         }
     }
+
 }
