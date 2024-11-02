@@ -33,7 +33,8 @@ class SQLGameDAOTest {
         ChessBoard board = new ChessBoard();
         board.resetBoard();
         defaultChessGame.setBoard(board);
-        defaultGameData = new GameData(1234, "white", "black", "gamename", defaultChessGame);
+        defaultGameData = new GameData(1234, "white", "black", "gamename",
+                defaultChessGame);
     }
 
     @AfterEach
@@ -49,7 +50,8 @@ class SQLGameDAOTest {
         dao.createGame(defaultGameData);
         GameData resultGameData;
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?")) {
+            try (var statement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, " +
+                                                       "chessGame FROM game WHERE gameID=?")) {
                 statement.setInt(1, defaultGameData.gameID());
                 try (var results = statement.executeQuery()) {
                     results.next();
@@ -74,10 +76,12 @@ class SQLGameDAOTest {
     @Test
     void listGamesPositive() throws DataAccessException, SQLException {
         dao.createGame(defaultGameData);
-        dao.createGame(new GameData(2345, "white", "black", "gamename", new ChessGame()));
+        dao.createGame(new GameData(2345, "white", "black", "gamename",
+                new ChessGame()));
         HashSet<GameData> resultGames = dao.listGames();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game")) {
+            try (var statement = conn.prepareStatement("SELECT gameID, whiteUsername, blackUsername, gameName, " +
+                                                       "chessGame FROM game")) {
                 try (var results = statement.executeQuery()) {
                     int i = 0;
                     while(results.next()) { i++; }
@@ -112,7 +116,8 @@ class SQLGameDAOTest {
     @Test
     void updateGamePositive() throws DataAccessException {
         dao.createGame(defaultGameData);
-        GameData updatedGame = new GameData(defaultGameData.gameID(), "newWhite", "black", "gamename", defaultGameData.game());
+        GameData updatedGame = new GameData(defaultGameData.gameID(), "newWhite", "black",
+                "gamename", defaultGameData.game());
         dao.updateGame(updatedGame);
         assertEquals(updatedGame, dao.getGame(defaultGameData.gameID()));
     }
