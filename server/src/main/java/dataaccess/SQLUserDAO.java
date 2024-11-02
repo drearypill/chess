@@ -3,6 +3,7 @@ package dataaccess;
 import model.UserData;
 import java.sql.SQLException;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 
 import static dataaccess.DatabaseManager.DATABASE_NAME;
 
@@ -59,8 +60,9 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public boolean authenticateUser(String username, String password) throws DataAccessException {
         UserData user = getUser(username);
-        return user.password().equals(password);
+        return passwordMatches(password, user.password());
     }
+
     @Override
     public void clear() {
         try (var conn = DatabaseManager.getConnection()) {
@@ -72,5 +74,10 @@ public class SQLUserDAO implements UserDAO {
         } catch (SQLException | DataAccessException e) {
             return;
         }
+    }
+
+    private boolean passwordMatches(String rawPassword, String hashedPassword) {
+        BCrypt encoder = new BCrypt();
+        return encoder.checkpw(rawPassword, hashedPassword);
     }
 }
