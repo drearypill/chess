@@ -11,8 +11,10 @@ public class ChessBoardUI {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+        setBackground(out);
 
         drawTopLetters(out);
+        drawRow(out);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
@@ -20,29 +22,28 @@ public class ChessBoardUI {
 
     private static void drawTopLetters(PrintStream out) {
 
-        String[] headers = { "a", "b", "c", "d", "e", "f", "g", "h"};
+        String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h"};
+        out.print(EMPTY);
+
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
-//            drawHeader(out, headers[boardCol]);
-            printTopLetters(out, headers[boardCol]);
-            out.print(EMPTY.repeat(1));
+            printTopLetters(out, letters[boardCol]);
+            out.print(EMPTY);
 
-
-//            if (boardCol < 3 - 1) {
-//                out.print(EMPTY.repeat(1));
-//            }
         }
 
         out.println();
     }
 
-    private static void drawHeader(PrintStream out, String headerText) {
-        int prefixLength = 3 / 2;
-        int suffixLength = 3 - prefixLength - 1;
+    private static void drawRow(PrintStream out) {
+        String[] row1 = { WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_KNIGHT, WHITE_BISHOP, WHITE_KNIGHT};
+        out.print(EMPTY);
+        for (int boardCol = 0; boardCol < 8; ++boardCol) {
+            printTopLetters(out, row1[boardCol]);
+            out.print(EMPTY);
 
-        out.print(EMPTY.repeat(prefixLength));
-        printTopLetters(out, headerText);
-        out.print(EMPTY.repeat(suffixLength));
+        }
     }
+
 
     private static void printTopLetters(PrintStream out, String player) {
         out.print(SET_BG_COLOR_LIGHT_GREEN);
@@ -51,8 +52,7 @@ public class ChessBoardUI {
         out.print(player);
     }
 
-    private static void setBlack(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
+    private static void setBackground(PrintStream out) {
+        out.print(SET_BG_COLOR_LIGHT_GREEN);
     }
 }
