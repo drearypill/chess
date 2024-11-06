@@ -114,10 +114,11 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (int y = 7; y >= 0; y--) {
+        for (int y = 0; y < 8; y++) {
             output.append("|");
             for (int x = 0; x < 8; x++) {
-                output.append(squares[x][y] != null ? squares[x][y].getPieceType().toString() : "  ");
+                output.append(squares[y][x] != null ? squares[y][x].getPieceType().toString() : "  ");
+                output.append(squares[y][x] != null ? squares[y][x].getTeamColor().toString() : "  ");
                 output.append("|");
             }
             output.append("\n");
