@@ -2,6 +2,8 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import chess.ChessBoard;
+import chess.ChessPiece;
 
 import static ui.EscapeSequences.*;
 
@@ -35,6 +37,9 @@ public class ChessBoardUI {
     }
 
     private static void drawRow(PrintStream out) {
+        ChessBoard board = new ChessBoard();
+        board.getBoard();
+        out.print(board);
         String[] row1 = { WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_KNIGHT, WHITE_BISHOP, WHITE_KNIGHT};
         out.print(EMPTY);
         for (int boardCol = 0; boardCol < 8; ++boardCol) {

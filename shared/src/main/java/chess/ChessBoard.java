@@ -40,6 +40,10 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
+    public ChessPiece[][] getBoard() {
+        return squares;
+    }
+
     public void movePiece(ChessMove move) {
         int startRow = move.startPosition().getRow() - 1;
         int startColumn = move.startPosition().getColumn() - 1;
@@ -110,9 +114,9 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder();
-        for (int y = 8; y >= 0; y--) {
+        for (int y = 7; y >= 0; y--) {
             output.append("|");
-            for (int x = 0; x < 9; x++) {
+            for (int x = 0; x < 8; x++) {
                 output.append(squares[x][y] != null ? squares[x][y].getPieceType().toString() : "  ");
                 output.append("|");
             }
