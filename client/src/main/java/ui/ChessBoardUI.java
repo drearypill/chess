@@ -15,26 +15,27 @@ public class ChessBoardUI {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
-        drawTopLetters(out);
+        drawLetters(out);
         for (int i = 1; i < 9; i++) {
             drawRow(out, i);
         }
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
-        drawTopLetters(out);
+        drawLetters(out);
 
     }
 
 
-    private static void drawTopLetters(PrintStream out) {
+    private static void drawLetters(PrintStream out) {
         setBackground(out);
         String[] letters = {"h", "g", "f", "e", "d", "c", "b", "a"};
         out.print(EMPTY);
 
+
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
             out.print(" ");
-            printTopLetters(out, 1 == 1 ? letters[boardCol] : letters[8 - boardCol]); //TODO: figure out who's perspective
+            printLetters(out, 1 == 1 ? letters[boardCol] : letters[7 - boardCol]); //TODO: figure out who's perspective
             out.print(" ");
         }
 
@@ -46,9 +47,11 @@ public class ChessBoardUI {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
         chessBoard.getBoard();
-//        out.print(chessBoard);
         out.print(" " + boardRow + " ");
+
         for (int boardCol = 1; boardCol < 9; ++boardCol) {
+            out.print(SET_TEXT_COLOR_NICE);
+
             if ((boardCol + boardRow) % 2 == 0) {
                 setDarkSquare(out);
             }
@@ -60,29 +63,33 @@ public class ChessBoardUI {
                 setBackground(out);
             }
         }
+        out.print(SET_TEXT_COLOR_NICE);
+
         out.print(" " + boardRow + " ");
         out.println();
     }
 
 
-    private static void printTopLetters(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_LIGHT_GREEN);
-        out.print(SET_TEXT_COLOR_DEEP_GREEN);
+    private static void printLetters(PrintStream out, String player) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_NICE);
 
         out.print(player);
     }
 
     private static void setBackground(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREEN);
+        out.print(SET_BG_COLOR_DARK_GREEN);
     }
     private static void setLightSquare(PrintStream out) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_BG_COLOR_LIGHT);
     }
     private static void setDarkSquare(PrintStream out) {
-        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(SET_BG_COLOR_DARK);
     }
 
     private static void printPiece(PrintStream out, ChessPiece piece) {
+        out.print(SET_TEXT_COLOR_BLACK);
+
         if (piece != null) {
             if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
                 out.print(" ");
