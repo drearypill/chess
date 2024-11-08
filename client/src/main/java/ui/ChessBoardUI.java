@@ -3,15 +3,19 @@ package ui;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import chess.ChessBoard;
-import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
+import static chess.ChessGame.TeamColor.WHITE;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUI {
 
     public static void main(String[] args) {
+        drawBoard();
+    }
+
+    public static void drawBoard() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -46,9 +50,8 @@ public class ChessBoardUI {
         ChessPiece[][] board = new ChessPiece[8][8];
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
-        chessBoard.getBoard();
-        out.print(" " + boardRow + " ");
 
+        out.print(" " + boardRow + " ");
         for (int boardCol = 1; boardCol < 9; ++boardCol) {
             out.print(SET_TEXT_COLOR_NICE);
 
@@ -64,14 +67,13 @@ public class ChessBoardUI {
             }
         }
         out.print(SET_TEXT_COLOR_NICE);
-
         out.print(" " + boardRow + " ");
         out.println();
     }
 
 
     private static void printLetters(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_DARK_GREEN);
+        //out.print(SET_BG_COLOR_DARK_GREEN);
         out.print(SET_TEXT_COLOR_NICE);
 
         out.print(player);
@@ -91,59 +93,31 @@ public class ChessBoardUI {
         out.print(SET_TEXT_COLOR_BLACK);
 
         if (piece != null) {
-            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                out.print(" ");
-
-                if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-                    out.print(WHITE_ROOK);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-                    out.print(WHITE_KNIGHT);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-                    out.print(WHITE_BISHOP);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-                    out.print(WHITE_QUEEN);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                    out.print(WHITE_KING);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-                    out.print(WHITE_PAWN);
-                }
-
-                out.print(" ");
-
+            out.print(" ");
+            if (piece.getTeamColor() == WHITE) {
+                printPiece(out, piece, WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_PAWN);
             }
-            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                out.print(" ");
-
-                if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-                    out.print(BLACK_ROOK);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-                    out.print(BLACK_KNIGHT);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-                    out.print(BLACK_BISHOP);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-                    out.print(BLACK_QUEEN);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                    out.print(BLACK_KING);
-                }
-                else if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-                    out.print(BLACK_PAWN);
-                }
-
-                out.print(" ");
-
+            else {
+                printPiece(out, piece, BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING, BLACK_PAWN);
             }
+            out.print(" ");
 
         }
         else {out.print(EMPTY);}
     }
+
+    private static void printPiece(PrintStream out, ChessPiece piece, String Rook, String Knight, String Bishop,
+                                   String Queen, String King, String Pawn) {
+            switch (piece.getPieceType()) {
+                case ROOK -> out.print(Rook);
+                case KNIGHT -> out.print(Knight);
+                case BISHOP -> out.print(Bishop);
+                case QUEEN -> out.print(Queen);
+                case KING -> out.print(King);
+                case PAWN -> out.print(Pawn);
+            }
+
+        }
+
 
 }
