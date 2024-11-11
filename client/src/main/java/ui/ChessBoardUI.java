@@ -34,6 +34,7 @@ public class ChessBoardUI {
 
     }
 
+
     private static void drawLetters(PrintStream out) {
         out.print(SET_BG_COLOR_DARK_GREEN);
         String[] letters = {"h", "g", "f", "e", "d", "c", "b", "a"};
