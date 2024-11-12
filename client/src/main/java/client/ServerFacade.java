@@ -6,10 +6,12 @@ import java.io.*;
 import java.net.*;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Objects;
+
 
 public class ServerFacade {
 
-    private final String serverUrl;
+    String serverUrl;
     String authToken;
 
     public ServerFacade(String url) {
@@ -19,7 +21,7 @@ public class ServerFacade {
     public boolean register(String username, String password, String email) {
         var body = Map.of("username", username, "password", password, "email", email);
         var jsonBody = new Gson().toJson(body);
-        Map resp = makeRequest("POST", "/user", jsonBody);
+        Map resp = request("POST", "/user", jsonBody);
         if (resp.containsKey("Error")) {
             return false;
         }
@@ -36,20 +38,16 @@ public class ServerFacade {
     public boolean login(String username, String password) {
         var body = Map.of("username", username, "password", password);
         var jsonBody = new Gson().toJson(body);
-        try {
-            Map resp = makeRequest("POST", "/session", jsonBody);
-            if (resp.containsKey("Error")) {
-                return false;
-            }
-            authToken = (String) resp.get("authToken");
-            return true;
-        } catch (ResponseException ex) {
+        Map resp = request("POST", "/session", jsonBody);
+        if (resp.containsKey("Error")) {
             return false;
         }
+        authToken = (String) resp.get("authToken");
+        return true;
     }
 
     public boolean logout() {
-        Map resp = makeRequest("DELETE", "/session");
+        Map resp = request("DELETE", "/session");
         if (resp.containsKey("Error")) {
             return false;
         }
@@ -57,28 +55,51 @@ public class ServerFacade {
         return true;
     }
 
-    private Map makeRequest(String method, String endpoint) {
-        try {
-            return makeRequest(method, endpoint, null);
-        } catch (ResponseException ex) {
-            return Collections.emptyMap();
-        }
+
+    private Map request (String method, String endpoint) {
+        return request(method, endpoint, null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request,) throws ResponseException {
+    private Map request(String method, String endpoint, String body) {
+        Map respMap;
         try {
-            URL url = (new URI(serverUrl + path)).toURL();
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            URI uri = new URI(serverUrl + endpoint);
+            HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
 
-            writeBody(request, http);
+            if (authToken != null) {
+                http.addRequestProperty("authorization", authToken);
+            }
+
+            if (!Objects.equals(body, null)) {
+                http.setDoOutput(true);
+                http.addRequestProperty("Content-Type", "application/json");
+                try (var outputStream = http.getOutputStream()) {
+                    outputStream.write(body.getBytes());
+                }
+            }
+
             http.connect();
-            throwIfNotSuccessful(http);
-            return readBody(http, responseClass);
-        } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+
+            try {
+                if (http.getResponseCode() == 401) {
+                    return Map.of("Error", 401);
+                }
+            } catch (IOException e) {
+                return Map.of("Error", 401);
+            }
+
+
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                respMap = new Gson().fromJson(inputStreamReader, Map.class);
+            }
+
+        } catch (URISyntaxException | IOException e) {
+            return Map.of("Error", e.getMessage());
         }
+
+        return respMap;
     }
 
 
@@ -102,7 +123,7 @@ public class ServerFacade {
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {
-            try (InputStream erespBody = http.getInputStream()) {
+            try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
                     response = new Gson().fromJson(reader, responseClass);
