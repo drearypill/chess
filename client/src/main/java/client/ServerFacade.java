@@ -1,3 +1,4 @@
+package client;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -5,7 +6,6 @@ import exception.ResponseException;
 import java.io.*;
 import java.net.*;
 import java.util.Map;
-import java.util.Collections;
 import java.util.Objects;
 
 
@@ -16,6 +16,8 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+    public ServerFacade() {
     }
 
     public boolean register(String username, String password, String email) {
