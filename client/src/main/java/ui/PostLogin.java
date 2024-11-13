@@ -44,9 +44,10 @@ public class PostLogin {
                         printCreate();
                         break;
                     }
-                    int tempgameID = server.createGame(input[1]);
-                    String gameName = input[1];
-                    out.printf("Created game, Name: %s", gameName);
+                    server.createGame(input[1]);
+                    out.println("Created game successfully!");
+                    refreshGames();
+                    printGames();
                     break;
                 case "join":
                     refreshGames();
@@ -92,7 +93,41 @@ public class PostLogin {
                     }
                     break;
 
-
+//                case "observe":
+//                    refreshGames();
+//                    System.out.println(games);
+//                    if (input.length != 2) {
+//                        out.println("Please provide a game ID");
+//                        printObserve();
+//                        break;
+//                    }
+//                    int observeGameId;
+//                    try {
+//                        observeGameId = Integer.parseInt(input[1]);
+//                    } catch (NumberFormatException e) {
+//                        out.println("Please provide a valid game ID");
+//                        printObserve();
+//                        break;
+//                    }
+//                    GameData observeGame = games.get(observeGameId);
+//
+//                    if (observeGame == null) {
+//                        out.println("Game does not exist or could not be found.");
+//                        printObserve();
+//                        break;
+//                    }
+//
+//                    out.println(observeGame);
+//                    out.println("Game ID: " + observeGame.gameID());
+//                    if (!server.joinGame(observeGame.gameID(), null)) {
+//                        out.println("You have joined the game as an observer");
+//                        ChessBoardUI.drawBoard("WHITE");
+//                        ChessBoardUI.drawBoard("BLACK");
+//                    } else {
+//                        out.println("Game does not exist or could not be joined.");
+//                        printObserve();
+//                    }
+//                    break;
                 case "observe":
                     refreshGames();
                     System.out.println(games);
@@ -109,9 +144,10 @@ public class PostLogin {
                         printObserve();
                         break;
                     }
-                    //int gameID = countToGameIdMap.get(selectedCount);
 
-                    GameData observeGame = games.get(observeGameCount);
+                    int observeGameID = countToGameIdMap.get(observeGameCount);
+                    GameData observeGame = games.get(observeGameID);
+
 
                     if (observeGame == null) {
                         out.println("Game does not exist or could not be found.");
@@ -119,9 +155,9 @@ public class PostLogin {
                         break;
                     }
 
-                    out.println(observeGame);
+                    out.println(observeGameID);
                     out.println("Game ID: " + observeGame.gameID());
-                    if (server.joinGame(observeGameCount, null)) {
+                    if (!server.joinGame(observeGameID, null)) {
                             out.println("You have joined the game as an observer");
                             ChessBoardUI.drawBoard("WHITE");
                             ChessBoardUI.drawBoard("BLACK");
