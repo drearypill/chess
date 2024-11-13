@@ -1,5 +1,5 @@
 import chess.*;
-import ui.ClientUI;
+import ui.PreLogin;
 import client.ServerFacade;
 
 
@@ -9,7 +9,7 @@ public class Main {
         System.out.println("♕ 240 Chess Client: " + piece);
         ServerFacade server = new ServerFacade();
 
-        ClientUI prelogin = new ClientUI(server);
+        PreLogin prelogin = new PreLogin(server);
         prelogin.run();
     }
 }

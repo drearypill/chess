@@ -6,12 +6,15 @@ import java.util.Scanner;
 import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 
-public class ClientUI {
+public class PreLogin {
 
     ServerFacade server;
+    PostLogin postlogin;
 
-    public ClientUI(ServerFacade server) {
+    public PreLogin(ServerFacade server) {
         this.server = server;
+        postlogin = new PostLogin(server);
+
     }
 
     public void run() {
@@ -62,6 +65,7 @@ public class ClientUI {
                     break;
             }
         }
+        postlogin.run();
 
 
     }

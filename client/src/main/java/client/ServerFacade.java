@@ -2,10 +2,12 @@ package client;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 
 import java.io.*;
 import java.net.*;
 import java.util.Map;
+import java.util.*;
 import java.util.Objects;
 
 
@@ -102,6 +104,30 @@ public class ServerFacade {
         }
 
         return respMap;
+    }
+
+    public int createGame(String gameName) {
+        var body = Map.of("gameName", gameName);
+        var jsonBody = new Gson().toJson(body);
+        Map resp = request("POST", "/game", jsonBody);
+        if (resp.containsKey("Error")) {
+            return -1;
+        }
+        double gameID = (double) resp.get("gameID");
+        return (int) gameID;
+    }
+
+
+    public boolean joinGame(int gameId, String playerColor) {
+        Map body;
+        if (playerColor != null) {
+            body = Map.of("gameID", gameId, "playerColor", playerColor);
+        } else {
+            body = Map.of("gameID", gameId);
+        }
+        var jsonBody = new Gson().toJson(body);
+        Map resp = request("PUT", "/game", jsonBody);
+        return !resp.containsKey("Error");
     }
 
 
