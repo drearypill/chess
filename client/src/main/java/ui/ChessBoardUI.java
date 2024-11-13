@@ -94,15 +94,15 @@ public class ChessBoardUI {
         else {out.print(EMPTY);}
     }
 
-    private static void printPiece(PrintStream out, ChessPiece piece, String Rook, String Knight, String Bishop,
-                                   String Queen, String King, String Pawn) {
+    private static void printPiece(PrintStream out, ChessPiece piece, String rook, String knight, String bishop,
+                                   String queen, String king, String pawn) {
             switch (piece.getPieceType()) {
-                case ROOK -> out.print(Rook);
-                case KNIGHT -> out.print(Knight);
-                case BISHOP -> out.print(Bishop);
-                case QUEEN -> out.print(Queen);
-                case KING -> out.print(King);
-                case PAWN -> out.print(Pawn);
+                case ROOK -> out.print(rook);
+                case KNIGHT -> out.print(knight);
+                case BISHOP -> out.print(bishop);
+                case QUEEN -> out.print(queen);
+                case KING -> out.print(king);
+                case PAWN -> out.print(pawn);
             }
 
         }
