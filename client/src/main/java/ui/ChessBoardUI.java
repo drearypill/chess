@@ -26,13 +26,17 @@ public class ChessBoardUI {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
 
-        drawLetters(out, team); // should also take in which team it is??
-        int start = team.equals("WHITE") ? 8 : 1;
-        int end = team.equals("WHITE") ? 0 : 9;
-        int step = team.equals("WHITE") ? -1 : 1;
+        drawLetters(out, team);
 
-        for (int i = start; i != end; i += step) {
-            drawRow(out, chessBoard, i);
+        if (team == "WHITE") {
+            for (int i = 8; i != 0; i -= 1) {
+                drawRow(out, chessBoard, i, team);
+            }
+        }
+        else if (team == "BLACK") {
+            for (int i = 1; i != 9; i += 1) {
+                drawRow(out, chessBoard, i, team);
+            }
         }
 
         drawLetters(out, team);
@@ -48,27 +52,32 @@ public class ChessBoardUI {
 
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
             out.print(" ");
-            printLetters(out, Objects.equals(team, "BLACK") ? letters[boardCol] : letters[7 - boardCol]); //need to: figure out whose perspective
+            printLetters(out, Objects.equals(team, "BLACK") ? letters[boardCol] : letters[7 - boardCol]);
             out.print(" ");
         }
 
         out.println();
     }
 
-    private static void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow) {
+    private static void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow, String team) {
 
         out.print(" " + boardRow + " "); // number the row
-        for (int boardCol = 1; boardCol < 9; ++boardCol) {
+        int startCol = team.equals("WHITE") ? 1 : 8;
+        int endCol = team.equals("WHITE") ? 9 : 0;
+        int step = team.equals("WHITE") ? 1 : -1;
+
+        for (int boardCol = startCol; boardCol != endCol; boardCol += step) {
             out.print(SET_TEXT_COLOR_NICE);
 
             if ((boardCol + boardRow) % 2 == 0) {
                 out.print(SET_BG_COLOR_DARK);
-            }
-            else {
+            } else {
                 out.print(SET_BG_COLOR_LIGHT);
             }
+
             drawSquare(out, chessBoard.getPiece(new ChessPosition(boardRow, boardCol)));
-            if (boardCol == 8) {
+
+            if (boardCol == (team.equals("WHITE") ? 8 : 1)) {
                 out.print(SET_BG_COLOR_DARK_GREEN);
             }
         }
