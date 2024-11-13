@@ -11,11 +11,13 @@ public class PostLogin {
 
     ServerFacade server;
     Map<Integer, GameData> games;
+    Map<Integer, Integer> countToGameIdMap; // listed count -> gameID
 
 
     public PostLogin(ServerFacade server) {
         this.server = server;
         games = new HashMap<>();
+        countToGameIdMap = new HashMap<>();
     }
 
     public void run() {
@@ -42,17 +44,38 @@ public class PostLogin {
                         printCreate();
                         break;
                     }
-                    int gameID = server.createGame(input[1]);
-                    out.printf("Created game, ID: %d%n", gameID);
+                    int tempgameID = server.createGame(input[1]);
+                    String gameName = input[1];
+                    out.printf("Created game, Name: %s", gameName);
                     break;
                 case "join":
                     refreshGames();
                     if (input.length != 3) {
-                        out.println("Please provide a game ID and color choice");
+                        out.println("Please provide a game number and color choice");
                         printJoin();
                         break;
                     }
-                    GameData joinGame = games.get(Integer.parseInt(input[1])); // Get the GameData by ID
+
+                    int selectedCount;
+                    try {
+                        selectedCount = Integer.parseInt(input[1]); // Get the display count
+                    } catch (NumberFormatException e) {
+                        out.println("Please provide a valid game number");
+                        printJoin();
+                        break;
+                    }
+
+                    // Map the selected count to the corresponding gameID
+                    Integer gameID = countToGameIdMap.get(selectedCount);  // Using the count-to-ID map
+
+                    if (gameID == null) {
+                        out.println("Game does not exist.");
+                        printJoin();
+                        break;
+                    }
+
+                    GameData joinGame = games.get(gameID); // Get the GameData by gameID
+
                     if (joinGame == null) {
                         out.println("Game does not exist.");
                         printJoin();
@@ -69,23 +92,26 @@ public class PostLogin {
                     }
                     break;
 
+
                 case "observe":
                     refreshGames();
                     System.out.println(games);
                     if (input.length != 2) {
-                        out.println("Please provide a game ID");
+                        out.println("Please provide a game number");
                         printObserve();
                         break;
                     }
-                    int observeGameId;
+                    int observeGameCount;
                     try {
-                        observeGameId = Integer.parseInt(input[1]);
+                        observeGameCount = Integer.parseInt(input[1]);
                     } catch (NumberFormatException e) {
-                        out.println("Please provide a valid game ID");
+                        out.println("Please provide a valid game number");
                         printObserve();
                         break;
                     }
-                    GameData observeGame = games.get(observeGameId);
+                    //int gameID = countToGameIdMap.get(selectedCount);
+
+                    GameData observeGame = games.get(observeGameCount);
 
                     if (observeGame == null) {
                         out.println("Game does not exist or could not be found.");
@@ -95,7 +121,7 @@ public class PostLogin {
 
                     out.println(observeGame);
                     out.println("Game ID: " + observeGame.gameID());
-                    if (server.joinGame(observeGameId, null)) {
+                    if (server.joinGame(observeGameCount, null)) {
                             out.println("You have joined the game as an observer");
                             ChessBoardUI.drawBoard("WHITE");
                             ChessBoardUI.drawBoard("BLACK");
@@ -130,9 +156,10 @@ public class PostLogin {
         }
     }
 
-    private void printGames() {
+    public void printGames() {
         int count = 1;  // Initialize a counter starting at 1
         for (GameData game : games.values()) {
+            countToGameIdMap.put(count, game.gameID());
             String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
             String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
             out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", count++, game.gameName(), whiteUser, blackUser);
