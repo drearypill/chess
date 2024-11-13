@@ -157,7 +157,7 @@ public class ServerFacade {
         }
         var jsonBody = new Gson().toJson(body);
         Map resp = request("PUT", "/game", jsonBody);
-        return resp.containsKey("Error");
+        return !resp.containsKey("Error");
     }
 
     private String readerToString(InputStreamReader reader) {
