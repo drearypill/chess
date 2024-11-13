@@ -59,11 +59,17 @@ public class Server {
         Spark.awaitStop();
     }
 
+    public void clearDB() {
+        userAuthService.clear();
+        gameService.clear();
+    }
+
     private Object clear(Request req, Response resp) {
-            userAuthService.clear();
-            gameService.clear();
-            resp.status(200);
-            return "{}";
+
+        clearDB();
+
+        resp.status(200);
+        return "{}";
     }
 
     private void badRequestExceptionHandler(BadRequestException ex, Request req, Response resp) {
