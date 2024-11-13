@@ -24,21 +24,16 @@ public class PostLogin {
         boolean loggedIn = true;
         while (loggedIn) {
             String[] input = getUserInput();
+            refreshGames();
             switch (input[0]) {
-                case "quit":
-                    return;
-                case "help":
-                    printHelpMenu();
-                    break;
-                case "logout":
+                case "quit"-> {return;}
+                case "help"-> {printHelpMenu();}
+                case "logout"-> {
                     server.logout();
                     loggedIn = false;
-                    break;
-                case "list":
-                    refreshGames();
-                    printGames();
-                    break;
-                case "create":
+                }
+                case "list"-> {printGames();}
+                case "create"-> {
                     if (input.length != 2) {
                         out.println("Please provide a name");
                         printCreate();
@@ -46,11 +41,9 @@ public class PostLogin {
                     }
                     server.createGame(input[1]);
                     out.println("Created game successfully!");
-                    refreshGames();
                     printGames();
-                    break;
-                case "join":
-                    refreshGames();
+                }
+                case "join"-> {
                     if (input.length != 3) {
                         out.println("Please provide a game number and color choice");
                         printJoin();
@@ -84,9 +77,8 @@ public class PostLogin {
                         out.println("Color taken or another issue occurred.");
                         printJoin();
                     }
-                    break;
-                    case "observe":
-                    refreshGames();
+                }
+                case "observe"-> {
                     if (input.length != 2) {
                         out.println("Please provide a game number");
                         printObserve();
@@ -108,19 +100,19 @@ public class PostLogin {
                         break;
                     }
                     if (!server.joinGame(observeGameID, null)) {
-                            out.println("You have joined the game as an observer");
-                            ChessBoardUI.drawBoard("WHITE");
-                            ChessBoardUI.drawBoard("BLACK");
-                        } else {
-                            out.println("Game does not exist or could not be joined.");
-                            printObserve();
-                        }
-                    break;
-
-                default:
+                        out.println("You have joined the game as an observer");
+                        ChessBoardUI.drawBoard("WHITE");
+                        ChessBoardUI.drawBoard("BLACK");
+                    } else {
+                        out.println("Game does not exist or could not be joined.");
+                        printObserve();
+                    }
+                }
+                default-> {
                     out.println("Command not recognized, please try again");
                     printHelpMenu();
                     break;
+                }
             }
         }
         PreLogin prelogin = new PreLogin(server);
@@ -133,6 +125,7 @@ public class PostLogin {
         return scanner.nextLine().split(" ");
     }
 
+
     private void refreshGames() {
         games.clear(); // Clear the existing games
         Set<GameData> gameList = server.listGames(); // Assuming listGames returns a Set or List of GameData
@@ -142,6 +135,7 @@ public class PostLogin {
     }
 
     public void printGames() {
+        refreshGames();
         int count = 1;  // Initialize a counter starting at 1
         for (GameData game : games.values()) {
             countToGameIdMap.put(count, game.gameID());
