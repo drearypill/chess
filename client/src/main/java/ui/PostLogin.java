@@ -56,7 +56,6 @@ public class PostLogin {
                         printJoin();
                         break;
                     }
-
                     int selectedCount;
                     try {
                         selectedCount = Integer.parseInt(input[1]); // Get the display count
@@ -65,24 +64,18 @@ public class PostLogin {
                         printJoin();
                         break;
                     }
-
-                    // Map the selected count to the corresponding gameID
                     Integer gameID = countToGameIdMap.get(selectedCount);  // Using the count-to-ID map
-
                     if (gameID == null) {
                         out.println("Game does not exist.");
                         printJoin();
                         break;
                     }
-
                     GameData joinGame = games.get(gameID); // Get the GameData by gameID
-
                     if (joinGame == null) {
                         out.println("Game does not exist.");
                         printJoin();
                         break;
                     }
-
                     if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
                         out.println("You have joined the game");
                         refreshGames();
@@ -92,45 +85,8 @@ public class PostLogin {
                         printJoin();
                     }
                     break;
-
-//                case "observe":
-//                    refreshGames();
-//                    System.out.println(games);
-//                    if (input.length != 2) {
-//                        out.println("Please provide a game ID");
-//                        printObserve();
-//                        break;
-//                    }
-//                    int observeGameId;
-//                    try {
-//                        observeGameId = Integer.parseInt(input[1]);
-//                    } catch (NumberFormatException e) {
-//                        out.println("Please provide a valid game ID");
-//                        printObserve();
-//                        break;
-//                    }
-//                    GameData observeGame = games.get(observeGameId);
-//
-//                    if (observeGame == null) {
-//                        out.println("Game does not exist or could not be found.");
-//                        printObserve();
-//                        break;
-//                    }
-//
-//                    out.println(observeGame);
-//                    out.println("Game ID: " + observeGame.gameID());
-//                    if (!server.joinGame(observeGame.gameID(), null)) {
-//                        out.println("You have joined the game as an observer");
-//                        ChessBoardUI.drawBoard("WHITE");
-//                        ChessBoardUI.drawBoard("BLACK");
-//                    } else {
-//                        out.println("Game does not exist or could not be joined.");
-//                        printObserve();
-//                    }
-//                    break;
-                case "observe":
+                    case "observe":
                     refreshGames();
-                    System.out.println(games);
                     if (input.length != 2) {
                         out.println("Please provide a game number");
                         printObserve();
@@ -144,19 +100,13 @@ public class PostLogin {
                         printObserve();
                         break;
                     }
-
                     int observeGameID = countToGameIdMap.get(observeGameCount);
                     GameData observeGame = games.get(observeGameID);
-
-
                     if (observeGame == null) {
                         out.println("Game does not exist or could not be found.");
                         printObserve();
                         break;
                     }
-
-                    out.println(observeGameID);
-                    out.println("Game ID: " + observeGame.gameID());
                     if (!server.joinGame(observeGameID, null)) {
                             out.println("You have joined the game as an observer");
                             ChessBoardUI.drawBoard("WHITE");
@@ -173,7 +123,6 @@ public class PostLogin {
                     break;
             }
         }
-
         PreLogin prelogin = new PreLogin(server);
         prelogin.run();
     }
