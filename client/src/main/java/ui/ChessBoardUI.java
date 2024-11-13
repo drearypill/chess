@@ -2,20 +2,23 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
 import chess.ChessBoard;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
 import static chess.ChessGame.TeamColor.WHITE;
+import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUI {
 
-    public static void main(String[] args) {
-        drawBoard();
+    public static void main(String[] args, String team) {
+        drawBoard(team);
     }
 
-    public static void drawBoard() {
+    public static void drawBoard(String team) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -23,26 +26,29 @@ public class ChessBoardUI {
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
 
-        drawLetters(out); // should also take in which team it is??
-        for (int i = 1; i < 9; i++) {
+        drawLetters(out, team); // should also take in which team it is??
+        int start = team.equals("WHITE") ? 8 : 1;
+        int end = team.equals("WHITE") ? 0 : 9;
+        int step = team.equals("WHITE") ? -1 : 1;
+
+        for (int i = start; i != end; i += step) {
             drawRow(out, chessBoard, i);
         }
 
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
-        drawLetters(out);
+        drawLetters(out, team);
+        out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
 
     }
 
 
-    private static void drawLetters(PrintStream out) {
+    private static void drawLetters(PrintStream out, String team) {
         out.print(SET_BG_COLOR_DARK_GREEN);
         String[] letters = {"h", "g", "f", "e", "d", "c", "b", "a"};
         out.print(EMPTY);
 
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
             out.print(" ");
-            printLetters(out, 1 == 1 ? letters[boardCol] : letters[7 - boardCol]); //need to: figure out whose perspective
+            printLetters(out, Objects.equals(team, "BLACK") ? letters[boardCol] : letters[7 - boardCol]); //need to: figure out whose perspective
             out.print(" ");
         }
 
@@ -74,6 +80,7 @@ public class ChessBoardUI {
 
     private static void printLetters(PrintStream out, String player) {
         out.print(SET_TEXT_COLOR_NICE);
+
         out.print(player);
     }
 
