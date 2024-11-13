@@ -42,7 +42,7 @@ public class ChessBoardUI {
 
         for (int boardCol = 0; boardCol < 8; ++boardCol) {
             out.print(" ");
-            printLetters(out, 1 == 1 ? letters[boardCol] : letters[7 - boardCol]); //TODO: figure out who's perspective
+            printLetters(out, 1 == 1 ? letters[boardCol] : letters[7 - boardCol]); //need to: figure out whose perspective
             out.print(" ");
         }
 
