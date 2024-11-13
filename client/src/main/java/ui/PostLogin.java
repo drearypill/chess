@@ -6,16 +6,16 @@ import model.GameData;
 import java.util.*;
 
 import static java.lang.System.out;
-//import static ui.EscapeSequences.*;
 
 public class PostLogin {
 
     ServerFacade server;
-    List<GameData> games;
+    Map<Integer, GameData> games;
+
 
     public PostLogin(ServerFacade server) {
         this.server = server;
-        games = new ArrayList<>();
+        games = new HashMap<>();
     }
 
     public void run() {
@@ -46,36 +46,65 @@ public class PostLogin {
                     out.printf("Created game, ID: %d%n", gameID);
                     break;
                 case "join":
+                    refreshGames();
                     if (input.length != 3) {
                         out.println("Please provide a game ID and color choice");
                         printJoin();
                         break;
                     }
-                    GameData joinGame = games.get(Integer.parseInt(input[1]));
+                    GameData joinGame = games.get(Integer.parseInt(input[1])); // Get the GameData by ID
+                    if (joinGame == null) {
+                        out.println("Game does not exist.");
+                        printJoin();
+                        break;
+                    }
+
                     if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
                         out.println("You have joined the game");
-                        ChessBoardUI.drawBoard();
+                        refreshGames();
+                        ChessBoardUI.drawBoard(input[2].toUpperCase());
                     } else {
-                        out.println("Game does not exist or color taken");
+                        out.println("Color taken or another issue occurred.");
                         printJoin();
                     }
                     break;
+
                 case "observe":
+                    refreshGames();
+                    System.out.println(games);
                     if (input.length != 2) {
                         out.println("Please provide a game ID");
                         printObserve();
                         break;
                     }
-                    GameData observeGame = games.get(Integer.parseInt(input[1]));
-                    if (server.joinGame(observeGame.gameID(), null)) {
-                        out.println("You have joined the game as an observer");
-                        ChessBoardUI.drawBoard();
-                        break;
-                    } else {
-                        out.println("Game does not exist");
+                    int observeGameId;
+                    try {
+                        observeGameId = Integer.parseInt(input[1]);
+                    } catch (NumberFormatException e) {
+                        out.println("Please provide a valid game ID");
                         printObserve();
                         break;
                     }
+                    GameData observeGame = games.get(observeGameId);
+
+                    if (observeGame == null) {
+                        out.println("Game does not exist or could not be found.");
+                        printObserve();
+                        break;
+                    }
+
+                    out.println(observeGame);
+                    out.println("Game ID: " + observeGame.gameID());
+                    if (server.joinGame(observeGameId, null)) {
+                            out.println("You have joined the game as an observer");
+                            ChessBoardUI.drawBoard("WHITE");
+                            ChessBoardUI.drawBoard("BLACK");
+                        } else {
+                            out.println("Game does not exist or could not be joined.");
+                            printObserve();
+                        }
+                    break;
+
                 default:
                     out.println("Command not recognized, please try again");
                     printHelpMenu();
@@ -94,18 +123,19 @@ public class PostLogin {
     }
 
     private void refreshGames() {
-        games = new ArrayList<>();
-        HashSet<GameData> gameList = server.listGames();
-        games.addAll(gameList);
+        games.clear(); // Clear the existing games
+        Set<GameData> gameList = server.listGames(); // Assuming listGames returns a Set or List of GameData
+        for (GameData game : gameList) {
+            games.put(game.gameID(), game); // Use the game ID as the key
+        }
     }
 
     private void printGames() {
-        for (int i = 0; i < games.size(); i++) {
-            GameData game = games.get(i);
+        int count = 1;  // Initialize a counter starting at 1
+        for (GameData game : games.values()) {
             String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
             String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
-            out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i, game.gameName(), whiteUser,
-                    blackUser);
+            out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", count++, game.gameName(), whiteUser, blackUser);
         }
     }
 

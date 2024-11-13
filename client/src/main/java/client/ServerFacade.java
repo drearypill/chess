@@ -68,8 +68,10 @@ public class ServerFacade {
         try {
             HttpURLConnection http = requestHelper(method, endpoint, body);
 
-            if (http.getResponseCode() == 401) {
-                return Map.of("Error", 401);
+            int responseCode = http.getResponseCode();
+
+            if (responseCode == 401) {
+                return Map.of("Error", "Unauthorized request");
             }
 
             try (InputStream respBody = http.getInputStream();
@@ -155,7 +157,7 @@ public class ServerFacade {
         }
         var jsonBody = new Gson().toJson(body);
         Map resp = request("PUT", "/game", jsonBody);
-        return !resp.containsKey("Error");
+        return resp.containsKey("Error");
     }
 
     private String readerToString(InputStreamReader reader) {

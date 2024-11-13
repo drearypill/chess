@@ -31,6 +31,7 @@ public class ServerFacadeTests {
         server.clearDB();
         facade = new ServerFacade("http://localhost:" + port);
     }
+
     @AfterEach
     void cleanup() {
         server.clearDB();
