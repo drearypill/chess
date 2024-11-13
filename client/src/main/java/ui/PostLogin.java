@@ -1,16 +1,12 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
 import client.ServerFacade;
 import model.GameData;
-import ui.EscapeSequences.*;
-import ui.ChessBoardUI;
 
 import java.util.*;
 
 import static java.lang.System.out;
-import static ui.EscapeSequences.*;
+//import static ui.EscapeSequences.*;
 
 public class PostLogin {
 
@@ -24,7 +20,6 @@ public class PostLogin {
 
     public void run() {
         boolean loggedIn = true;
-        out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
         while (loggedIn) {
             String[] input = getUserInput();
             switch (input[0]) {
@@ -60,12 +55,11 @@ public class PostLogin {
                     if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
                         out.println("You have joined the game");
                         ChessBoardUI.drawBoard();
-                        break;
                     } else {
                         out.println("Game does not exist or color taken");
                         printJoin();
-                        break;
                     }
+                    break;
                 case "observe":
                     if (input.length != 2) {
                         out.println("Please provide a game ID");
@@ -110,7 +104,8 @@ public class PostLogin {
             GameData game = games.get(i);
             String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
             String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
-            out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i, game.gameName(), whiteUser, blackUser);
+            out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i, game.gameName(), whiteUser,
+                    blackUser);
         }
     }
 

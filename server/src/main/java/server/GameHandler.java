@@ -6,6 +6,8 @@ import model.GameData;
 import service.GameService;
 import spark.Request;
 import spark.Response;
+import model.GamesList;
+
 import java.util.HashSet;
 
 public class GameHandler {
@@ -17,9 +19,9 @@ public class GameHandler {
 
     public Object listGames(Request req, Response resp) throws UnauthorizedException {
         String authToken = req.headers("authorization");
-        HashSet<GameData> games = gameService.listGames(authToken);
+        GamesList games = new GamesList(gameService.listGames(authToken));
         resp.status(200);
-        return "{ \"games\": %s}".formatted(new Gson().toJson(games));
+        return new Gson().toJson(games);
     }
 
     public Object createGame(Request req, Response resp) throws BadRequestException, UnauthorizedException {

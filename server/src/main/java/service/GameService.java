@@ -1,6 +1,8 @@
 package service;
 
 import dataaccess.*;
+import chess.ChessBoard;
+import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import java.util.HashSet;
@@ -37,6 +39,10 @@ public class GameService {
         } while (gameDAO.gameExists(gameID));
 
         try {
+            ChessGame game = new ChessGame();
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            game.setBoard(board);
             gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
         } catch (DataAccessException e) {
             throw new BadRequestException(e.getMessage());
