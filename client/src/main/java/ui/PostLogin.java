@@ -111,7 +111,6 @@ public class PostLogin {
                 default-> {
                     out.println("Command not recognized, please try again");
                     printHelpMenu();
-                    break;
                 }
             }
         }
