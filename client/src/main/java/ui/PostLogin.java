@@ -44,69 +44,10 @@ public class PostLogin {
                     printGames();
                 }
                 case "join"-> {
-                    if (input.length != 3) {
-                        out.println("Please provide a game number and color choice");
-                        printJoin();
-                        break;
-                    }
-                    int selectedCount;
-                    try {
-                        selectedCount = Integer.parseInt(input[1]); // Get the display count
-                    } catch (NumberFormatException e) {
-                        out.println("Please provide a valid game number");
-                        printJoin();
-                        break;
-                    }
-                    Integer gameID = countToGameIdMap.get(selectedCount);  // Using the count-to-ID map
-                    if (gameID == null) {
-                        out.println("Game does not exist.");
-                        printJoin();
-                        break;
-                    }
-                    GameData joinGame = games.get(gameID); // Get the GameData by gameID
-                    if (joinGame == null) {
-                        out.println("Game does not exist.");
-                        printJoin();
-                        break;
-                    }
-                    if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
-                        out.println("You have joined the game");
-                        refreshGames();
-                        ChessBoardUI.drawBoard(input[2].toUpperCase(), null);
-                    } else {
-                        out.println("Color taken or another issue occurred.");
-                        printJoin();
-                    }
+                    handleJoin(input);
                 }
                 case "observe"-> {
-                    if (input.length != 2) {
-                        out.println("Please provide a game number");
-                        printObserve();
-                        break;
-                    }
-                    int observeGameCount;
-                    try {
-                        observeGameCount = Integer.parseInt(input[1]);
-                    } catch (NumberFormatException e) {
-                        out.println("Please provide a valid game number");
-                        printObserve();
-                        break;
-                    }
-                    int observeGameID = countToGameIdMap.get(observeGameCount);
-                    GameData observeGame = games.get(observeGameID);
-                    if (observeGame == null) {
-                        out.println("Game does not exist or could not be found.");
-                        printObserve();
-                        break;
-                    }
-                    if (!server.joinGame(observeGameID, null)) {
-                        out.println("You have joined the game as an observer");
-                        ChessBoardUI.drawBoard("WHITE", null);
-                        ChessBoardUI.drawBoard("BLACK", null);
-                    } else {
-                        out.println("Game does not exist or could not be joined.");
-                        printObserve();
-                    }
+                    handleObserve(input);
                 }
                 default-> {
                     out.println("Command not recognized, please try again");
@@ -116,6 +57,73 @@ public class PostLogin {
         }
         PreLogin prelogin = new PreLogin(server);
         prelogin.run();
+    }
+
+    private void handleObserve(String[] input) {
+        if (input.length != 2) {
+            out.println("Please provide a game number");
+            printObserve();
+            return;
+        }
+        int observeGameCount;
+        try {
+            observeGameCount = Integer.parseInt(input[1]);
+        } catch (NumberFormatException e) {
+            out.println("Please provide a valid game number");
+            printObserve();
+            return;
+        }
+        int observeGameID = countToGameIdMap.get(observeGameCount);
+        GameData observeGame = games.get(observeGameID);
+        if (observeGame == null) {
+            out.println("Game does not exist or could not be found.");
+            printObserve();
+            return;
+        }
+        if (!server.joinGame(observeGameID, null)) {
+            out.println("You have joined the game as an observer");
+            ChessBoardUI.drawBoard("WHITE", null);
+            ChessBoardUI.drawBoard("BLACK", null);
+        } else {
+            out.println("Game does not exist or could not be joined.");
+            printObserve();
+        }
+    }
+
+    private void handleJoin(String[] input) {
+        if (input.length != 3) {
+            out.println("Please provide a game number and color choice");
+            printJoin();
+            return;
+        }
+        int selectedCount;
+        try {
+            selectedCount = Integer.parseInt(input[1]); // Get the display count
+        } catch (NumberFormatException e) {
+            out.println("Please provide a valid game number");
+            printJoin();
+            return;
+        }
+        Integer gameID = countToGameIdMap.get(selectedCount);  // Using the count-to-ID map
+        if (gameID == null) {
+            out.println("Game does not exist.");
+            printJoin();
+            return;
+        }
+        GameData joinGame = games.get(gameID); // Get the GameData by gameID
+        if (joinGame == null) {
+            out.println("Game does not exist.");
+            printJoin();
+            return;
+        }
+        if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
+            out.println("You have joined the game");
+            refreshGames();
+            ChessBoardUI.drawBoard(input[2].toUpperCase(), null);
+        } else {
+            out.println("Color taken or another issue occurred.");
+            printJoin();
+        }
     }
 
     private String[] getUserInput() {
