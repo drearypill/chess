@@ -29,24 +29,29 @@ public class ChessBoardUI {
 
         out.print(ERASE_SCREEN);
 
+        Collection<ChessMove> possibleMoves = null;
+
         if (selectedPos != null) {
-            out.println(getMoves(selectedPos));
+            possibleMoves = getMoves(selectedPos);
+            out.println(possibleMoves);
 
         }
 
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
+        out.println(possibleMoves);
+
 
         drawLetters(out, team);
 
         if (team == "WHITE") {
             for (int i = 8; i != 0; i -= 1) {
-                drawRow(out, chessBoard, i, team);
+                drawRow(out, chessBoard, i, team, possibleMoves, selectedPos);
             }
         }
         else if (team == "BLACK") {
             for (int i = 1; i != 9; i += 1) {
-                drawRow(out, chessBoard, i, team);
+                drawRow(out, chessBoard, i, team, possibleMoves, selectedPos);
             }
         }
 
@@ -82,7 +87,8 @@ public class ChessBoardUI {
         out.println();
     }
 
-    private static void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow, String team) {
+    private static void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow, String team,
+                                Collection<ChessMove> moves, ChessPosition selectedPos) {
 
         out.print(" " + boardRow + " "); // number the row
         int startCol = team.equals("WHITE") ? 1 : 8;
@@ -90,12 +96,20 @@ public class ChessBoardUI {
         int step = team.equals("WHITE") ? 1 : -1;
 
         for (int boardCol = startCol; boardCol != endCol; boardCol += step) {
+            ChessMove move = new ChessMove(selectedPos, new ChessPosition(boardRow, boardCol), null);
             out.print(SET_TEXT_COLOR_NICE);
+            //out.println(moves);
 
             if ((boardCol + boardRow) % 2 == 0) {
-                out.print(SET_BG_COLOR_DARK);
+                if (moves != null && moves.contains(move)){
+                    out.print(SET_BG_COLOR_BLUE);
+                }
+                else {out.print(SET_BG_COLOR_DARK);}
             } else {
-                out.print(SET_BG_COLOR_LIGHT);
+                if (moves != null && moves.contains(move)){
+                    out.print(SET_BG_COLOR_YELLOW);
+                }
+                else {out.print(SET_BG_COLOR_LIGHT);}
             }
 
             drawSquare(out, chessBoard.getPiece(new ChessPosition(boardRow, boardCol)));
