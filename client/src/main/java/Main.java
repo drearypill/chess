@@ -6,7 +6,7 @@ import ui.ChessBoardUI;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println("♕ 240 Chess Client: " );
         ServerFacade server = new ServerFacade();
 

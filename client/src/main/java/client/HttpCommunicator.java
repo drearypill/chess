@@ -18,9 +18,12 @@ public class HttpCommunicator {
 
     String baseURL;
     String authToken;
+    ServerFacade facade;
 
-    public HttpCommunicator(String url) {
-        baseURL = url;
+
+    public HttpCommunicator(ServerFacade facade, String serverDomain) {
+        baseURL = "http://" + serverDomain;
+        this.facade = facade;
     }
 
     public boolean register(String username, String password, String email) {
