@@ -16,7 +16,7 @@ public class InGame {
     ChessGame game;
     ChessGame.TeamColor color;
 
-    public InGame(ServerFacade server, ChessGame game, ChessGame.TeamColor color) {
+    public InGame(ServerFacade server, GameData gameData, ChessGame.TeamColor color) {
         this.server = server;
         this.game = game;
         this.color = color;
@@ -55,8 +55,8 @@ public class InGame {
                 case "highlight":
                     if (input.length == 2 && input[1].matches("[a-h][1-8]")) {
                         ChessPosition position = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
-                        out.println(position.toString());
-                        //print it out with highlights
+                        //out.println(position.toString());
+                        ChessBoardUI.drawBoard(teamColor, position);
                     }
                     else {
                         out.println("Please provide a coordinate (ex: 'c3')");

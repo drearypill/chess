@@ -30,7 +30,8 @@ public class ChessBoardUI {
         out.print(ERASE_SCREEN);
 
         if (selectedPos != null) {
-            getMoves(selectedPos);
+            out.println(getMoves(selectedPos));
+
         }
 
         ChessBoard chessBoard = new ChessBoard();
@@ -54,7 +55,7 @@ public class ChessBoardUI {
 
     }
 
-    private static void getMoves(ChessPosition selectedPos) {
+    private static Collection<ChessMove> getMoves(ChessPosition selectedPos) {
         Collection<ChessMove> possibleMoves = selectedPos != null ? staticValidMoves(selectedPos) : null;
         HashSet<ChessPosition> possibleSquares = HashSet.newHashSet(possibleMoves != null ? possibleMoves.size() : 0);
         if (possibleMoves != null) {
@@ -63,6 +64,7 @@ public class ChessBoardUI {
 
             }
         }
+        return possibleMoves;
     }
 
 

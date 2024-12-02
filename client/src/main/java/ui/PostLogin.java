@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import client.ServerFacade;
 import model.GameData;
 
@@ -116,10 +117,14 @@ public class PostLogin {
             printJoin();
             return;
         }
+
+        ChessGame.TeamColor color = input[2].equalsIgnoreCase("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
         if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
             refreshGames();
-            ChessBoardUI.drawBoard(input[2].toUpperCase(), null);
+            InGame gameplayREPL = new InGame(server, joinGame, color);
+            gameplayREPL.run();
         } else {
             out.println("Color taken or another issue occurred.");
             printJoin();
