@@ -53,12 +53,11 @@ public class PreLogin {
                     if (server.register(input[1], input[2], input[3])) {
                         out.println("You are now registered and logged in");
                         loggedIn = true;
-                        break;
                     } else {
                         out.println("Username already in use, please choose a new one");
                         printRegister();
-                        break;
                     }
+                    break;
                 default:
                     out.println("Command not recognized, please try again");
                     printHelpMenu();

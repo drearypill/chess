@@ -1,7 +1,6 @@
 package client;
 
 import com.google.gson.Gson;
-import exception.ResponseException;
 import model.GameData;
 import model.GamesList;
 

@@ -9,7 +9,6 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 
 import static chess.ChessGame.TeamColor.WHITE;
-import static java.lang.System.out;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUI {
