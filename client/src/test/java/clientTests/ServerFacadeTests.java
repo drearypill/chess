@@ -1,4 +1,4 @@
-package client;
+package clientTests;
 import client.ServerFacade;
 
 import org.junit.jupiter.api.*;
@@ -40,6 +40,7 @@ public class ServerFacadeTests {
     public void registerPositive() {
         assertTrue(facade.register("username", "password", "email"));
     }
+
     @Test
     public void registerNegative() {
         facade.register("username", "password", "email");
