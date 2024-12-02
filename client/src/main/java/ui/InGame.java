@@ -23,7 +23,7 @@ public class InGame {
     }
     public void run() {
         boolean inGame = true;
-        String teamColor = "WHITE";  //TODO: get the team color
+        String teamColor = color.name();
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
         ChessBoardUI.drawBoard(teamColor, null);
         while (inGame) {
