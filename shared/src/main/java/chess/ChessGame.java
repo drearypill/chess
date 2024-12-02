@@ -26,6 +26,13 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {return this.teamTurn;}
 
+    public static Collection<ChessMove> staticValidMoves(ChessPosition position) {
+        ChessGame game = new ChessGame();
+        return game.validMoves(position);
+    }
+
+
+
     /**
      * Set's which teams turn it is
      *

@@ -2,25 +2,36 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
-import chess.ChessBoard;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import static chess.ChessGame.TeamColor.WHITE;
+import static chess.ChessGame.staticValidMoves;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUI {
 
-    public static void main(String[] args, String team) {
-        drawBoard(team);
+    ChessGame game;
+
+    public ChessBoardUI() {
+        game = new ChessGame();
     }
 
-    public static void drawBoard(String team) {
+    public static void main(String[] args, String team) {
+        drawBoard(team, null);
+    }
+
+    public static void drawBoard(String team, ChessPosition selectedPos) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
+
+        if (selectedPos != null) {
+            getMoves(selectedPos);
+        }
 
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
@@ -41,6 +52,17 @@ public class ChessBoardUI {
         drawLetters(out, team);
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
 
+    }
+
+    private static void getMoves(ChessPosition selectedPos) {
+        Collection<ChessMove> possibleMoves = selectedPos != null ? staticValidMoves(selectedPos) : null;
+        HashSet<ChessPosition> possibleSquares = HashSet.newHashSet(possibleMoves != null ? possibleMoves.size() : 0);
+        if (possibleMoves != null) {
+            for (ChessMove move : possibleMoves) {
+                possibleSquares.add(move.getEndPosition());
+
+            }
+        }
     }
 
 

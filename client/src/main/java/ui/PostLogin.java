@@ -72,7 +72,7 @@ public class PostLogin {
                     if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
                         out.println("You have joined the game");
                         refreshGames();
-                        ChessBoardUI.drawBoard(input[2].toUpperCase());
+                        ChessBoardUI.drawBoard(input[2].toUpperCase(), null);
                     } else {
                         out.println("Color taken or another issue occurred.");
                         printJoin();
@@ -101,8 +101,8 @@ public class PostLogin {
                     }
                     if (!server.joinGame(observeGameID, null)) {
                         out.println("You have joined the game as an observer");
-                        ChessBoardUI.drawBoard("WHITE");
-                        ChessBoardUI.drawBoard("BLACK");
+                        ChessBoardUI.drawBoard("WHITE", null);
+                        ChessBoardUI.drawBoard("BLACK", null);
                     } else {
                         out.println("Game does not exist or could not be joined.");
                         printObserve();
