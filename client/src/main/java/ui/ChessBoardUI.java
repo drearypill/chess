@@ -102,14 +102,16 @@ public class ChessBoardUI {
 
             if ((boardCol + boardRow) % 2 == 0) {
                 if (moves != null && moves.contains(move)){
-                    out.print(SET_BG_COLOR_BLUE);
+                    out.print(SET_BG_COLOR_DARK_HIGHLIGHT);
                 }
                 else {out.print(SET_BG_COLOR_DARK);}
+
             } else {
                 if (moves != null && moves.contains(move)){
-                    out.print(SET_BG_COLOR_YELLOW);
+                    out.print(SET_BG_COLOR_LIGHT_HIGHLIGHT);
                 }
                 else {out.print(SET_BG_COLOR_LIGHT);}
+
             }
 
             drawSquare(out, chessBoard.getPiece(new ChessPosition(boardRow, boardCol)));

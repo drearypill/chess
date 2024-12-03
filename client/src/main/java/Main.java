@@ -1,4 +1,5 @@
 
+import chess.ChessPosition;
 import ui.PreLogin;
 import ui.PostLogin;
 import client.ServerFacade;
@@ -9,6 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("♕ 240 Chess Client: " );
         ServerFacade server = new ServerFacade();
+        //ChessBoardUI.drawBoard("WHITE", new ChessPosition(2,2));
 
         PreLogin prelogin = new PreLogin(server);
         prelogin.run();
