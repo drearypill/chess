@@ -1,8 +1,11 @@
 package client;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
 import model.GamesList;
+import websocket.commands.*;
 
 import java.io.*;
 import java.net.*;
@@ -60,5 +63,35 @@ public class ServerFacade {
 
     public void sendWSMessage(String message) {
         ws.sendMessage(message);
+    }
+
+    public void connectWS() {
+        try {
+            ws = new WebsocketCommunicator(serverDomain);
+        }
+        catch (Exception e) {
+            System.out.println("Failed to make connection with server");
+        }
+    }
+
+    public void sendCommand(UserGameCommand command) {
+        String message = new Gson().toJson(command);
+        ws.sendMessage(message);
+    }
+
+    public void Connect(int gameID, ChessGame.TeamColor color) {
+        sendCommand(new Connect(authToken, gameID, color, UserGameCommand.CommandType.CONNECT));
+    }
+
+    public void makeMove(int gameID, ChessMove move) {
+        sendCommand(new MakeMove(authToken, gameID, move, UserGameCommand.CommandType.MAKE_MOVE));
+    }
+
+    public void leave(int gameID) {
+        sendCommand(new Leave(authToken, gameID, UserGameCommand.CommandType.LEAVE));
+    }
+
+    public void resign(int gameID) {
+        sendCommand(new Resign(authToken, gameID, UserGameCommand.CommandType.RESIGN));
     }
 }

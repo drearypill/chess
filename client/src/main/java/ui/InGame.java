@@ -16,6 +16,7 @@ public class InGame {
     ServerFacade server;
     ChessGame game;
     public static ChessGame.TeamColor color;
+    int gameID;
 
     public InGame(ServerFacade server, GameData gameData, ChessGame.TeamColor color) {
         this.server = server;
@@ -38,6 +39,7 @@ public class InGame {
                     break;
                 case "leave":
                     inGame = false;
+                    server.leave(gameID);
                     break;
                 case "move":
                     if (input.length == 3 && input[1].matches("[a-h][1-8]") && input[2].matches("[a-h][1-8]")) {
@@ -51,12 +53,18 @@ public class InGame {
                     }
                     break;
                 case "resign":
-                    confirmResign();
+                    out.println("Are you sure you want to forfeit? (yes/no)");
+                    String[] confirmation = getUserInput();
+                    if (confirmation.length == 1 && confirmation[0].equalsIgnoreCase("yes")) {
+                        server.resign(gameID);
+                    }
+                    else {
+                        out.println("Resignation cancelled");
+                    }
                     break;
                 case "highlight":
                     if (input.length == 2 && input[1].matches("[a-h][1-8]")) {
                         ChessPosition position = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
-                        //out.println(position.toString());
                         ChessBoardUI.drawBoard(teamColor, position);
                     }
                     else {
@@ -95,6 +103,5 @@ public class InGame {
     }
     private void makeMove(ChessPosition from, ChessPosition to) {
     }
-    private void confirmResign() {
-    }
+
 }

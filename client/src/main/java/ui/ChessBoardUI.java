@@ -16,13 +16,22 @@ public class ChessBoardUI {
 
     ChessGame game;
 
-    public ChessBoardUI() {
-        game = new ChessGame();
-    }
+//    public ChessBoardUI() {
+//        game = new ChessGame();
+//    }
+//
+//    public static void updateGame(ChessGame game) {
+//        this.game = game;
+//    }
 
-    public static void updateGame(ChessGame game) {
+    public ChessBoardUI(ChessGame game) {
         this.game = game;
     }
+
+    public void updateGame(ChessGame game) {
+        this.game = game;
+    }
+
 
     public static void main(String[] args, String team) {
         drawBoard(team, null);
@@ -37,13 +46,13 @@ public class ChessBoardUI {
 
         if (selectedPos != null) {
             possibleMoves = getMoves(selectedPos);
-            out.println(possibleMoves);
+            //out.println(possibleMoves);
 
         }
 
         ChessBoard chessBoard = new ChessBoard();
         chessBoard.resetBoard();
-        out.println(possibleMoves);
+        //out.println(possibleMoves);
 
 
         drawLetters(out, team);
