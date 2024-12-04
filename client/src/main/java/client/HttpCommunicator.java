@@ -23,6 +23,7 @@ public class HttpCommunicator {
 
     public HttpCommunicator(ServerFacade facade, String serverDomain) {
         baseURL = "http://" + serverDomain;
+        System.out.println(baseURL);
         this.facade = facade;
     }
 
