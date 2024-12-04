@@ -22,7 +22,7 @@ public class ServerFacade {
     String authToken;
 
     public ServerFacade() throws Exception {
-        this("http://localhost:8080");
+        this("localhost:8080");
     }
 
     public ServerFacade(String serverDomain) throws Exception {
@@ -79,7 +79,7 @@ public class ServerFacade {
         ws.sendMessage(message);
     }
 
-    public void Connect(int gameID, ChessGame.TeamColor color) {
+    public void connect(int gameID, ChessGame.TeamColor color) {
         sendCommand(new Connect(authToken, gameID, color, UserGameCommand.CommandType.CONNECT));
     }
 

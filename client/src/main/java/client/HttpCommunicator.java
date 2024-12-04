@@ -22,7 +22,7 @@ public class HttpCommunicator {
 
 
     public HttpCommunicator(ServerFacade facade, String serverDomain) {
-        baseURL = serverDomain;
+        baseURL = "http://" + serverDomain;
         this.facade = facade;
     }
 

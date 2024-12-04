@@ -14,6 +14,8 @@ public class PostLogin {
     Map<Integer, GameData> games;
     Map<Integer, Integer> countToGameIdMap; // listed count -> gameID
 
+    boolean inGame;
+
 
     public PostLogin(ServerFacade server) {
         this.server = server;
@@ -23,7 +25,7 @@ public class PostLogin {
 
     public void run() {
         boolean loggedIn = true;
-        while (loggedIn) {
+        while (loggedIn && !inGame) {
             String[] input = getUserInput();
             refreshGames();
             switch (input[0]) {
@@ -83,6 +85,9 @@ public class PostLogin {
         }
         if (!server.joinGame(observeGameID, null)) {
             out.println("You have joined the game as an observer");
+            inGame = true;
+            server.connectWS();
+            server.connect(observeGame.gameID(), null);
             ChessBoardUI.drawBoard("WHITE", null);
             ChessBoardUI.drawBoard("BLACK", null);
         } else {
@@ -123,6 +128,9 @@ public class PostLogin {
         if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
             refreshGames();
+            inGame = true;
+            server.connectWS();
+            server.connect(joinGame.gameID(), color);
             InGame gameplayREPL = new InGame(server, joinGame, color);
             gameplayREPL.run();
         } else {

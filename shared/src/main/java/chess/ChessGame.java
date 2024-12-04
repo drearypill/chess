@@ -14,6 +14,9 @@ public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
 
+    private boolean gameOver;
+
+
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.board = new ChessBoard();
@@ -30,8 +33,6 @@ public class ChessGame {
         ChessGame game = new ChessGame();
         return game.validMoves(position);
     }
-
-
 
     /**
      * Set's which teams turn it is
@@ -263,6 +264,14 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public boolean getGameOver() {
+        return gameOver;
     }
 
     private Collection<ChessPiece> getTeamPieces(TeamColor teamColor) {

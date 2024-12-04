@@ -1,6 +1,8 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import client.ServerFacade;
 import model.GameData;
@@ -45,7 +47,7 @@ public class InGame {
                     if (input.length == 3 && input[1].matches("[a-h][1-8]") && input[2].matches("[a-h][1-8]")) {
                         ChessPosition from = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
                         ChessPosition to = new ChessPosition(input[2].charAt(1) - '0',input[2].charAt(0) - ('a'-1));
-                        makeMove(from, to);
+                        makeMove(from, to,  input);
                     }
                     else {
                         out.println("Please provide a to and from coordinate (ex: 'c3 d5')");
@@ -101,7 +103,29 @@ public class InGame {
     private void printHighlight() {
         out.println("highlight <coordinate> - highlight all legal moves for the given piece");
     }
-    private void makeMove(ChessPosition from, ChessPosition to) {
+    private void makeMove(ChessPosition from, ChessPosition to, String[] input) {
+        ChessPiece.PieceType promotion = null;
+        if (input.length == 4) {
+            promotion = getPieceType(input[3]);
+            if (promotion == null) { // If it was improperly typed by the user
+                out.println("Please provide proper promotion piece name (ex: 'knight')");
+                printMakeMove();
+            }
+        }
+
+        server.makeMove(gameID, new ChessMove(from, to, promotion));
+
+    }
+
+    public ChessPiece.PieceType getPieceType(String name) {
+        return switch (name.toUpperCase()) {
+            case "QUEEN" -> ChessPiece.PieceType.QUEEN;
+            case "BISHOP" -> ChessPiece.PieceType.BISHOP;
+            case "KNIGHT" -> ChessPiece.PieceType.KNIGHT;
+            case "ROOK" -> ChessPiece.PieceType.ROOK;
+            case "PAWN" -> ChessPiece.PieceType.PAWN;
+            default -> null;
+        };
     }
 
 }

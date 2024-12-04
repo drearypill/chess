@@ -1,19 +1,25 @@
 package server;
 
 import dataaccess.*;
+import org.eclipse.jetty.websocket.api.Session;
 import service.GameService;
 import service.UserAuthService;
 import spark.*;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
 
     UserDAO userDAO;
     AuthDAO authDAO;
     GameDAO gameDAO;
-    UserAuthService userAuthService;
-    GameService gameService;
+    static UserAuthService userAuthService;
+    static GameService gameService;
     UserAuthHandler userAuthHandler;
     GameHandler gameHandler;
+
+    // {Session: gameID}
+    static ConcurrentHashMap<Session, Integer> gameSessions = new ConcurrentHashMap<>();
 
     public Server() {
         userDAO = new SQLUserDAO();
@@ -73,6 +79,8 @@ public class Server {
         resp.status(200);
         return "{}";
     }
+
+
 
     private void badRequestExceptionHandler(BadRequestException ex, Request req, Response resp) {
         resp.status(400);
