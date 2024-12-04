@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    private final CommandType commandType;
+    public CommandType commandType;
 
     private final String authToken;
 
@@ -23,6 +23,8 @@ public class UserGameCommand {
     }
 
     public enum CommandType {
+//        JOIN_OBSERVER,
+//        JOIN_PLAYER,
         CONNECT,
         MAKE_MOVE,
         LEAVE,

@@ -12,9 +12,10 @@ import static ui.EscapeSequences.RESET_BG_COLOR;
 import static ui.EscapeSequences.RESET_TEXT_COLOR;
 
 public class InGame {
+
     ServerFacade server;
     ChessGame game;
-    ChessGame.TeamColor color;
+    public static ChessGame.TeamColor color;
 
     public InGame(ServerFacade server, GameData gameData, ChessGame.TeamColor color) {
         this.server = server;

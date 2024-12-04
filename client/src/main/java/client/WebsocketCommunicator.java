@@ -5,6 +5,15 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import chess.ChessGame;
+import com.google.gson.Gson;
+import ui.*;
+
+import websocket.messages.*;
+
+import java.util.LinkedList;
+import static ui.EscapeSequences.ERASE_LINE;
+import static ui.EscapeSequences.moveCursorToLocation;
 
 public class WebsocketCommunicator extends Endpoint {
 
@@ -18,18 +27,50 @@ public class WebsocketCommunicator extends Endpoint {
             this.session = container.connectToServer(this, uri);
 
             //set message handler
-            this.session.addMessageHandler((MessageHandler.Whole<String>) this::handleMessage);
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String message) {
+                    handleMessage(message);
+                }
+            });
+
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new Exception();
         }
+
     }
 
     @Override
     public void onOpen(Session session, EndpointConfig config) {
     }
-    public void handleMessage(String message) {
-        System.out.println(message);
+
+    private void handleMessage(String message) {
+        if (message.contains("\"serverMessageType\":\"NOTIFICATION\"")) {
+            Notification notif = new Gson().fromJson(message, Notification.class);
+            printNotification(notif.getMessage());
+        }
+        else if (message.contains("\"serverMessageType\":\"ERROR\"")) {
+            ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
+            printNotification(error.getMessage());
+        }
+        else if (message.contains("\"serverMessageType\":\"LOAD_GAME\"")) {
+            LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
+            printLoadedGame(loadGame.getGame());
+        }
     }
+
+    private void printNotification(String message) {
+        System.out.print(ERASE_LINE + '\r');
+        System.out.printf("\n%s\n[IN-GAME] >>> ", message);
+    }
+
+    private void printLoadedGame(ChessGame game) {
+        System.out.print(ERASE_LINE + "\r\n");
+        ChessBoardUI.updateGame(game);
+        ChessBoardUI.drawBoard(InGame.color.toString(), null);
+        System.out.print("[IN-GAME] >>> ");
+    }
+
     public void sendMessage(String message) {
         this.session.getAsyncRemote().sendText(message);
     }

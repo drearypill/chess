@@ -20,6 +20,10 @@ public class ChessBoardUI {
         game = new ChessGame();
     }
 
+    public static void updateGame(ChessGame game) {
+        this.game = game;
+    }
+
     public static void main(String[] args, String team) {
         drawBoard(team, null);
     }
