@@ -61,9 +61,6 @@ public class ServerFacade {
         return http.joinGame(gameId, playerColor);
     }
 
-    public void sendWSMessage(String message) {
-        ws.sendMessage(message);
-    }
 
     public void connectWS() {
         try {

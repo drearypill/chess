@@ -16,14 +16,6 @@ public class ChessBoardUI {
 
     ChessGame game;
 
-//    public ChessBoardUI() {
-//        game = new ChessGame();
-//    }
-//
-//    public static void updateGame(ChessGame game) {
-//        this.game = game;
-//    }
-
     public ChessBoardUI(ChessGame game) {
         this.game = game;
     }

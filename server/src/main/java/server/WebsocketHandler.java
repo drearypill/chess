@@ -85,7 +85,8 @@ public void onConnect(Session session) throws Exception {
 //            System.out.println("Game object in GameData: " + game.game());
 
             if (command.getColor() != null) {
-                ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+                ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white")
+                        ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
                 boolean correctColor;
                 if (joiningColor == ChessGame.TeamColor.WHITE) {
                     correctColor = Objects.equals(game.whiteUsername(), auth.username());
@@ -115,25 +116,6 @@ public void onConnect(Session session) throws Exception {
             sendError(session, new Error("Error: Not a valid game"));
         }
 
-    }
-
-    private void handleJoinObserver(Session session, Connect command) throws IOException {
-        try {
-            AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
-
-            GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
-
-            Notification notif = new Notification("%s has joined the game as an observer".formatted(auth.username()));
-            broadcastMessage(session, notif);
-
-            LoadGame load = new LoadGame(game.game());
-            sendMessage(session, load);
-        }
-        catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
-        } catch (BadRequestException e) {
-            sendError(session, new Error("Error: Not a valid game"));
-        }
     }
 
     private void handleMakeMove(Session session, MakeMove command) throws IOException {
@@ -268,7 +250,7 @@ public void onConnect(Session session) throws Exception {
         else if (username.equals(game.blackUsername())) {
             return ChessGame.TeamColor.BLACK;
         }
-        else return null;
+        else {return null;}
     }
 
 }
