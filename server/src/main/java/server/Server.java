@@ -18,7 +18,6 @@ public class Server {
     UserAuthHandler userAuthHandler;
     GameHandler gameHandler;
 
-    // {Session: gameID}
     static ConcurrentHashMap<Session, Integer> gameSessions = new ConcurrentHashMap<>();
 
     public Server() {
@@ -43,7 +42,7 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        Spark.webSocket("/connect", WebsocketHandler.class);
+        Spark.webSocket("/ws", WebsocketHandler.class);
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", userAuthHandler::register);

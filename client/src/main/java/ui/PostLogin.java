@@ -88,8 +88,10 @@ public class PostLogin {
             inGame = true;
             server.connectWS();
             server.connect(observeGame.gameID(), null);
-            ChessBoardUI.drawBoard("WHITE", null);
-            ChessBoardUI.drawBoard("BLACK", null);
+            InGame inObservedGame = new InGame(server, observeGame, null);
+            inObservedGame.run();
+//            ChessBoardUI.drawBoard("WHITE", null);
+//            ChessBoardUI.drawBoard("BLACK", null);
         } else {
             out.println("Game does not exist or could not be joined.");
             printObserve();

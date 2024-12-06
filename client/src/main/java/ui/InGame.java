@@ -27,6 +27,10 @@ public class InGame {
     }
     public void run() {
         boolean inGame = true;
+        if (color == null) {
+            observeLoop(inGame);
+            return;
+        }
         String teamColor = color.name();
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
         ChessBoardUI.drawBoard(teamColor, null);
@@ -83,6 +87,40 @@ public class InGame {
         PostLogin postlogin = new PostLogin(server);
         postlogin.run();
     }
+
+    private void observeLoop(Boolean inGame) {
+        ChessBoardUI.drawBoard("WHITE", null);
+        while (inGame) {
+            String[] input = getUserInput();
+            switch (input[0]) {
+                case "help":
+                    printObserveHelpMenu();
+                    break;
+                case "redraw":
+                    ChessBoardUI.drawBoard("WHITE", null);
+                    break;
+                case "leave":
+                    inGame = false;
+                    server.leave(gameID);
+                    break;
+                case "highlight":
+                    if (input.length == 2 && input[1].matches("[a-h][1-8]")) {
+                        ChessPosition position = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
+                        ChessBoardUI.drawBoard("WHITE", position);
+                    }
+                    else {
+                        out.println("Please provide a coordinate (ex: 'c3')");
+                        printHighlight();
+                    }
+                    break;
+                default:
+                    out.println("Command not recognized, please try again");
+                    printObserveHelpMenu();
+                    break;
+            }
+        }
+    }
+
     private String[] getUserInput() {
         String prompt = color == null ? "OBSERVING" : color == ChessGame.TeamColor.WHITE ? "WHITE" : "BLACK";
         out.printf("\n[%s] >>> ", prompt);
@@ -97,6 +135,14 @@ public class InGame {
         printHighlight();
         out.println("help - show this menu");
     }
+
+    private void printObserveHelpMenu() {
+        out.println("redraw - redraw the game board");
+        out.println("leave - leave the current game");
+        printHighlight();
+        out.println("help - show this menu");
+    }
+
     private void printMakeMove() {
         out.println("move <from> <to> - make a move");
     }

@@ -12,6 +12,9 @@ public class Connect extends UserGameCommand {
         this.commandType = UserGameCommand.CommandType.CONNECT;
         //this.gameID = gameID;
         this.playerColor = playerColor;
+        if (playerColor == null) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
     }
 
 

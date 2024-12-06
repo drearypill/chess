@@ -9,6 +9,8 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
+
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.io.IOException;
@@ -56,29 +58,49 @@ public void onConnect(Session session) throws Exception {
         }
     }
 
+    @OnWebSocketError
+    public void onError(Session session, Throwable throwable) {
+        System.err.printf("WebSocket error for session %s: %s%n", session, throwable.getMessage());
+
+        try {
+            if (session != null && session.isOpen()) {
+                // Send an error message to the client
+                sendError(session, new Error("WebSocket error: " + throwable.getMessage()));
+
+                // Optionally, close the session after an error
+                //session.close(1011, "An unexpected error occurred");
+            }
+        } catch (IOException e) {
+            System.err.printf("Error sending error message to client: %s%n", e.getMessage());
+        }
+    }
+
     private void handleConnect(Session session, Connect command) throws IOException {
 
         try {
             AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
             GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
 
-            ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            if (command.getColor() != null) {
+                ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+                boolean correctColor;
+                if (joiningColor == ChessGame.TeamColor.WHITE) {
+                    correctColor = Objects.equals(game.whiteUsername(), auth.username());
+                }
+                else {
+                    correctColor = Objects.equals(game.blackUsername(), auth.username());
+                }
 
-            boolean correctColor;
-            if (joiningColor == ChessGame.TeamColor.WHITE) {
-                correctColor = Objects.equals(game.whiteUsername(), auth.username());
+                if (!correctColor) {
+                    Error error = new Error("Error: attempting to join with wrong color");
+                    sendError(session, error);
+                    return;
+                }
             }
-            else {
-                correctColor = Objects.equals(game.blackUsername(), auth.username());
-            }
+            //ChessGame.TeamColor joiningColor = ChessGame.TeamColor.WHITE;
 
-            if (!correctColor) {
-                Error error = new Error("Error: attempting to join with wrong color");
-                sendError(session, error);
-                return;
-            }
 
-            Notification notif = new Notification("%s has joined the game as %s".formatted(auth.username(), command.getColor().toString()));
+            Notification notif = new Notification("%s has joined the game as %s".formatted(auth.username(), command.getColor()));
             broadcastMessage(session, notif);
 
             LoadGame load = new LoadGame(game.game());
