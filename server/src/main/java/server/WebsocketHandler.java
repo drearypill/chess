@@ -65,7 +65,7 @@ public void onConnect(Session session) throws Exception {
         try {
             if (session != null && session.isOpen()) {
                 // Send an error message to the client
-                sendError(session, new Error("WebSocket error: " + throwable.getMessage()));
+                sendError(session, new ErrorMessage("WebSocket error: " + throwable.getMessage()));
 
                 // Optionally, close the session after an error
                 //session.close(1011, "An unexpected error occurred");
@@ -96,7 +96,7 @@ public void onConnect(Session session) throws Exception {
                 }
 
                 if (!correctColor) {
-                    Error error = new Error("Error: attempting to join with wrong color");
+                    ErrorMessage error = new ErrorMessage("Error: attempting to join with wrong color");
                     sendError(session, error);
                     return;
                 }
@@ -111,9 +111,9 @@ public void onConnect(Session session) throws Exception {
             sendMessage(session, load);
         }
         catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
+            sendError(session, new ErrorMessage("Error: Not authorized"));
         } catch (BadRequestException e) {
-            sendError(session, new Error("Error: Not a valid game"));
+            sendError(session, new ErrorMessage("Error: Not a valid game"));
         }
 
     }
@@ -124,12 +124,12 @@ public void onConnect(Session session) throws Exception {
             GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
             ChessGame.TeamColor userColor = getTeamColor(auth.username(), game);
             if (userColor == null) {
-                sendError(session, new Error("Error: You are observing this game"));
+                sendError(session, new ErrorMessage("Error: You are observing this game"));
                 return;
             }
 
             if (game.game().getGameOver()) {
-                sendError(session, new Error("Error: can not make a move, game is over"));
+                sendError(session, new ErrorMessage("Error: can not make a move, game is over"));
                 return;
             }
 
@@ -161,16 +161,16 @@ public void onConnect(Session session) throws Exception {
                 broadcastMessage(session, load, true);
             }
             else {
-                sendError(session, new Error("Error: it is not your turn"));
+                sendError(session, new ErrorMessage("Error: it is not your turn"));
             }
         }
         catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
+            sendError(session, new ErrorMessage("Error: Not authorized"));
         } catch (BadRequestException e) {
-            sendError(session, new Error("Error: invalid game"));
+            sendError(session, new ErrorMessage("Error: invalid game"));
         } catch (InvalidMoveException e) {
             System.out.println("****** error: " + e.getMessage() + "  " + command.getMove().toString());
-            sendError(session, new Error("Error: invalid move (you might need to specify a promotion piece)"));
+            sendError(session, new ErrorMessage("Error: invalid move (you might need to specify a promotion piece)"));
         }
     }
 
@@ -183,7 +183,7 @@ public void onConnect(Session session) throws Exception {
 
             session.close();
         } catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
+            sendError(session, new ErrorMessage("Error: Not authorized"));
         }
     }
 
@@ -196,12 +196,12 @@ public void onConnect(Session session) throws Exception {
             String opponentUsername = userColor == ChessGame.TeamColor.WHITE ? game.blackUsername() : game.whiteUsername();
 
             if (userColor == null) {
-                sendError(session, new Error("Error: You are observing this game"));
+                sendError(session, new ErrorMessage("Error: You are observing this game"));
                 return;
             }
 
             if (game.game().getGameOver()) {
-                sendError(session, new Error("Error: The game is already over!"));
+                sendError(session, new ErrorMessage("Error: The game is already over!"));
                 return;
             }
 
@@ -210,9 +210,9 @@ public void onConnect(Session session) throws Exception {
             Notification notif = new Notification("%s has forfeited, %s wins!".formatted(auth.username(), opponentUsername));
             broadcastMessage(session, notif, true);
         } catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
+            sendError(session, new ErrorMessage("Error: Not authorized"));
         } catch (BadRequestException e) {
-            sendError(session, new Error("Error: invalid game"));
+            sendError(session, new ErrorMessage("Error: invalid game"));
         }
     }
 
@@ -238,7 +238,7 @@ public void onConnect(Session session) throws Exception {
         session.getRemote().sendString(new Gson().toJson(message));
     }
 
-    private void sendError(Session session, Error error) throws IOException {
+    private void sendError(Session session, ErrorMessage error) throws IOException {
         System.out.printf("Error: %s%n", new Gson().toJson(error));
         session.getRemote().sendString(new Gson().toJson(error));
     }
