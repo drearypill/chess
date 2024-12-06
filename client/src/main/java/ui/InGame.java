@@ -119,6 +119,8 @@ public class InGame {
                     break;
             }
         }
+        PostLogin postlogin = new PostLogin(server);
+        postlogin.run();
     }
 
     private String[] getUserInput() {

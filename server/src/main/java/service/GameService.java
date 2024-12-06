@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameService {
+
     GameDAO gameDAO;
     AuthDAO authDAO;
 
@@ -27,12 +28,41 @@ public class GameService {
         return gameDAO.listGames();
     }
 
+    public GameData getGameData(String authToken, int gameID) throws UnauthorizedException, BadRequestException {
+        try {
+            authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
+
+        try {
+            return gameDAO.getGame(gameID);
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    public void updateGame(String authToken, GameData gameData) throws UnauthorizedException, BadRequestException {
+        try {
+            authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new UnauthorizedException();
+        }
+
+        try {
+            gameDAO.updateGame(gameData);
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
     public int createGame(String authToken, String gameName) throws UnauthorizedException, BadRequestException {
         try {
             authDAO.getAuth(authToken);
         } catch (DataAccessException e) {
             throw new UnauthorizedException();
         }
+
         int gameID;
         do { // Get random gameIDs until the gameID is not already in use
             gameID = ThreadLocalRandom.current().nextInt(1, 10000);
@@ -43,39 +73,25 @@ public class GameService {
             ChessBoard board = new ChessBoard();
             board.resetBoard();
             game.setBoard(board);
-            gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
+            gameDAO.createGame(new GameData(gameID, null, null, gameName, game));
         } catch (DataAccessException e) {
             throw new BadRequestException(e.getMessage());
         }
+
         return gameID;
     }
 
-    public GameData getGameData(String authToken, int gameID) throws UnauthorizedException, BadRequestException {
-        try {
-            authDAO.getAuth(authToken);
-        } catch (DataAccessException e) {
-            throw new UnauthorizedException();
-        }
-        try {
-            return gameDAO.getGame(gameID);
-        } catch (DataAccessException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-    }
-    public void updateGame(String authToken, GameData gameData) throws UnauthorizedException, BadRequestException {
-        try {
-            authDAO.getAuth(authToken);
-        } catch (DataAccessException e) {
-            throw new UnauthorizedException();
-        }
-        try {
-            gameDAO.updateGame(gameData);
-        } catch (DataAccessException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-    }
 
 
+    /***
+     *
+     * @param authToken authToken of user
+     * @param gameID gameID of the game to join
+     * @param color (nullable) team color to join as
+     * @return boolean of success
+     * @throws UnauthorizedException invalid authToken
+     * @throws BadRequestException bad request
+     */
     public boolean joinGame(String authToken, int gameID, String color) throws UnauthorizedException, BadRequestException {
         AuthData authData;
         GameData gameData;
@@ -95,22 +111,12 @@ public class GameService {
         String blackUser = gameData.blackUsername();
 
         if (Objects.equals(color, "WHITE")) {
-            if (whiteUser != null) {
-                return false;
-            } // Spot taken
-            else {
-                whiteUser = authData.username();
-            }
+            if (whiteUser != null && !whiteUser.equals(authData.username())) return false; // Spot taken by someone else
+            else whiteUser = authData.username();
         } else if (Objects.equals(color, "BLACK")) {
-            if (blackUser != null) {
-                return false;
-            } // Spot taken
-            else {
-                blackUser = authData.username();
-            }
-        } else {
-            throw new BadRequestException("%s is not a valid team color".formatted(color));
-        }
+            if (blackUser != null && !blackUser.equals(authData.username())) return false; // Spot taken by someone else
+            else blackUser = authData.username();
+        } else if (color != null) throw new BadRequestException("%s is not a valid team color".formatted(color));
 
         try {
             gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
