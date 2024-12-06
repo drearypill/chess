@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameService {
-
     GameDAO gameDAO;
     AuthDAO authDAO;
 
@@ -83,15 +82,6 @@ public class GameService {
 
 
 
-    /***
-     *
-     * @param authToken authToken of user
-     * @param gameID gameID of the game to join
-     * @param color (nullable) team color to join as
-     * @return boolean of success
-     * @throws UnauthorizedException invalid authToken
-     * @throws BadRequestException bad request
-     */
     public boolean joinGame(String authToken, int gameID, String color) throws UnauthorizedException, BadRequestException {
         AuthData authData;
         GameData gameData;
@@ -111,12 +101,22 @@ public class GameService {
         String blackUser = gameData.blackUsername();
 
         if (Objects.equals(color, "WHITE")) {
-            if (whiteUser != null && !whiteUser.equals(authData.username())) return false; // Spot taken by someone else
-            else whiteUser = authData.username();
+            if (whiteUser != null) {
+                return false;
+            } // Spot taken
+            else {
+                whiteUser = authData.username();
+            }
         } else if (Objects.equals(color, "BLACK")) {
-            if (blackUser != null && !blackUser.equals(authData.username())) return false; // Spot taken by someone else
-            else blackUser = authData.username();
-        } else if (color != null) throw new BadRequestException("%s is not a valid team color".formatted(color));
+            if (blackUser != null) {
+                return false;
+            } // Spot taken
+            else {
+                blackUser = authData.username();
+            }
+        } else {
+            throw new BadRequestException("%s is not a valid team color".formatted(color));
+        }
 
         try {
             gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.gameName(), gameData.game()));
