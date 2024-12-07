@@ -154,7 +154,10 @@ public void onConnect(Session session) throws Exception {
             }
 
             if (game.game().getTeamTurn().equals(userColor)) {
+                System.out.println(command.getMove());
                 game.game().makeMove(command.getMove());
+//                Server.gameService.leaveGame(auth.authToken(), game.gameID(), "WHITE");
+
 
                 Notification notif;
                 ChessGame.TeamColor opponentColor = userColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;

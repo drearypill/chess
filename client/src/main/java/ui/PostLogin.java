@@ -130,15 +130,9 @@ public class PostLogin {
             out.println("You have joined the game");
             refreshGames();
             inGame = true;
-            System.out.println("ingame");
-
             server.connectWS();
-            System.out.println("ws conn");
             server.connect(joinGameData.gameID(), color);
-            System.out.println("join game");
             InGame gameREPL = new InGame(server, joinGameData, color);
-            System.out.println("created");
-
             gameREPL.run();
         } else {
             out.println("Color taken or another issue occurred.");

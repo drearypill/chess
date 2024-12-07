@@ -24,11 +24,11 @@ public class InGame {
         this.server = server;
         this.game = game;
         this.color = color;
+        this.gameID = gameData.gameID();
     }
 
     public void run() {
         boolean inGame = true;
-        //System.out.println(color);
 
         if (color == null) {
             observeLoop(inGame);
@@ -36,7 +36,7 @@ public class InGame {
         }
         String teamColor = color.name();
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
-        ChessBoardUI.drawBoard(teamColor, null);
+        //ChessBoardUI.drawBoard(teamColor, null);
         while (inGame) {
             String[] input = getUserInput();
             switch (input[0]) {
@@ -55,6 +55,7 @@ public class InGame {
                         ChessPosition from = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
                         ChessPosition to = new ChessPosition(input[2].charAt(1) - '0',input[2].charAt(0) - ('a'-1));
                         makeMove(from, to,  input);
+                        ChessBoardUI.drawBoard(teamColor, null);
                     }
                     else {
                         out.println("Please provide a to and from coordinate (ex: 'c3 d5')");
@@ -165,6 +166,7 @@ public class InGame {
         }
 
         server.makeMove(gameID, new ChessMove(from, to, promotion));
+
 
     }
 

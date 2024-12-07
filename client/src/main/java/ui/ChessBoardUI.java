@@ -10,6 +10,7 @@ import chess.*;
 
 import static chess.ChessGame.TeamColor.WHITE;
 import static chess.ChessGame.staticValidMoves;
+import static chess.ChessGame.updateStaticInstance;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUI {
@@ -41,9 +42,10 @@ public class ChessBoardUI {
             //out.println(possibleMoves);
 
         }
-
-        ChessBoard chessBoard = new ChessBoard();
-        chessBoard.resetBoard();
+        //game.getBoard()
+        ChessGame game = ChessGame.getStaticInstance();
+        updateStaticInstance(game);
+        ChessBoard chessBoard = game.getBoard();
         //out.println(possibleMoves);
 
 

@@ -16,6 +16,18 @@ public class ChessGame {
 
     private boolean gameOver;
 
+    private static ChessGame staticInstance;
+
+    public static ChessGame getStaticInstance() {
+        if (staticInstance == null) {
+            staticInstance = new ChessGame(); // Create a default instance if none exists
+        }
+        return staticInstance;
+    }
+
+    public static void updateStaticInstance(ChessGame game) {
+        staticInstance = game;
+    }
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
