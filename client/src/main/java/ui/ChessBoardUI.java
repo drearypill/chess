@@ -25,7 +25,6 @@ public class ChessBoardUI {
         this.game = game;
     }
 
-
     public void main(String[] args, String team) {
         drawBoard(team, null);
     }
@@ -39,23 +38,20 @@ public class ChessBoardUI {
 
         if (selectedPos != null) {
             possibleMoves = getMoves(selectedPos);
-            //out.println(possibleMoves);
-
         }
-        //game.getBoard()
+
         ChessGame game = ChessGame.getStaticInstance();
         updateStaticInstance(game);
         ChessBoard chessBoard = game.getBoard();
 
-
         drawLetters(out, team);
 
-        if (team == "WHITE") {
+        if (Objects.equals(team, "WHITE")) {
             for (int i = 8; i != 0; i -= 1) {
                 drawRow(out, chessBoard, i, team, possibleMoves, selectedPos);
             }
         }
-        else if (team == "BLACK") {
+        else if (Objects.equals(team, "BLACK")) {
             for (int i = 1; i != 9; i += 1) {
                 drawRow(out, chessBoard, i, team, possibleMoves, selectedPos);
             }
@@ -136,7 +132,6 @@ public class ChessBoardUI {
         out.print(player);
     }
 
-
     private void drawSquare(PrintStream out, ChessPiece piece) {
         out.print(SET_TEXT_COLOR_BLACK);
 
@@ -165,6 +160,5 @@ public class ChessBoardUI {
             }
 
         }
-
 
 }
