@@ -25,9 +25,10 @@ public class InGame {
         this.game = game;
         this.color = color;
     }
+
     public void run() {
         boolean inGame = true;
-        System.out.println(color);
+        //System.out.println(color);
 
         if (color == null) {
             observeLoop(inGame);

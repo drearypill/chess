@@ -68,8 +68,13 @@ public class WebsocketCommunicator extends Endpoint {
     private void printLoadedGame(ChessGame game) {
         System.out.print(ERASE_LINE + "\r\n");
         //ChessBoardUI.updateGame(game);
-        ChessBoardUI.drawBoard(InGame.color.toString(), null);
-        System.out.print("[IN-GAME] >>> ");
+        if (InGame.color.toString() == null) {
+            ChessBoardUI.drawBoard("WHITE", null);
+            System.out.print("[OBSERVING] >>> ");
+        }
+        else {
+            ChessBoardUI.drawBoard(InGame.color.toString(), null);
+            System.out.print("[IN-GAME] >>> ");}
     }
 
     public void sendMessage(String message) {

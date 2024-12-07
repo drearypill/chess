@@ -18,7 +18,6 @@ import java.util.Objects;
 public class HttpCommunicator {
 
     String baseURL;
-    String authToken;
     ServerFacade facade;
 
 
@@ -35,7 +34,9 @@ public class HttpCommunicator {
         if (resp.containsKey("Error")) {
             return false;
         }
-        authToken = (String) resp.get("authToken");
+        //authToken = (String) resp.get("authToken");
+        facade.setAuthToken((String) resp.get("authToken"));
+
         return true;
     }
 
@@ -52,7 +53,8 @@ public class HttpCommunicator {
         if (resp.containsKey("Error")) {
             return false;
         }
-        authToken = (String) resp.get("authToken");
+        //authToken = (String) resp.get("authToken");
+        facade.setAuthToken((String) resp.get("authToken"));
         return true;
     }
 
@@ -61,7 +63,9 @@ public class HttpCommunicator {
         if (resp.containsKey("Error")) {
             return false;
         }
-        authToken = null;
+        facade.setAuthToken(null);
+
+        //authToken = null;
         return true;
     }
 
@@ -117,8 +121,8 @@ public class HttpCommunicator {
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod(method);
 
-        if (authToken != null) {
-            http.addRequestProperty("authorization", authToken);
+        if (facade.getAuthToken() != null) {
+            http.addRequestProperty("authorization", facade.getAuthToken());
         }
 
         if (body != null) {

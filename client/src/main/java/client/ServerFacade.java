@@ -73,6 +73,7 @@ public class ServerFacade {
     }
 
     public void connect(int gameID, ChessGame.TeamColor color) {
+        System.out.println("auth is " + authToken);
         sendCommand(new Connect(authToken, gameID, color, UserGameCommand.CommandType.CONNECT));
     }
 
