@@ -67,12 +67,11 @@ public class ChessBoardUI {
     }
 
     private Collection<ChessMove> getMoves(ChessPosition selectedPos) {
-        Collection<ChessMove> possibleMoves = selectedPos != null ? staticValidMoves(selectedPos) : null;
+        Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
         HashSet<ChessPosition> possibleSquares = HashSet.newHashSet(possibleMoves != null ? possibleMoves.size() : 0);
         if (possibleMoves != null) {
             for (ChessMove move : possibleMoves) {
                 possibleSquares.add(move.getEndPosition());
-
             }
         }
         return possibleMoves;
