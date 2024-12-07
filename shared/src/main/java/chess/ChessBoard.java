@@ -117,8 +117,8 @@ public class ChessBoard {
         for (int y = 0; y < 8; y++) {
             output.append("|");
             for (int x = 0; x < 8; x++) {
-                output.append(squares[y][x] != null ? squares[y][x].getPieceType().toString() : "  ");
-                output.append(squares[y][x] != null ? squares[y][x].getTeamColor().toString() : "  ");
+                output.append(squares[y][x] != null ? squares[y][x].getPieceType().toString() : "    ");
+                output.append(squares[y][x] != null ? squares[y][x].getTeamColor().toString() : "    ");
                 output.append("|");
             }
             output.append("\n");

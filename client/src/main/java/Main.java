@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("♕ 240 Chess Client: " );
         ServerFacade server = new ServerFacade();
-//here
+
         PreLogin prelogin = new PreLogin(server);
         prelogin.run();
     }

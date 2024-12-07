@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import client.ServerFacade;
 import model.GameData;
 import java.util.ArrayList;
@@ -19,12 +16,15 @@ public class InGame {
     ChessGame game;
     public static ChessGame.TeamColor color;
     int gameID;
+    public static ChessBoardUI boardPrinter;
+
 
     public InGame(ServerFacade server, GameData gameData, ChessGame.TeamColor color) {
         this.server = server;
-        this.game = game;
-        this.color = color;
+        this.game = gameData.game();
+        InGame.color = color;
         this.gameID = gameData.gameID();
+        boardPrinter = new ChessBoardUI(game);
     }
 
     public void run() {
@@ -44,7 +44,9 @@ public class InGame {
                     printHelpMenu();
                     break;
                 case "redraw":
-                    ChessBoardUI.drawBoard(teamColor, null);
+                    boardPrinter.drawBoard(teamColor, null);
+//                  System.out.println(server.getBoardForCurrentGame(gameID).toString());
+
                     break;
                 case "leave":
                     inGame = false;
@@ -54,8 +56,9 @@ public class InGame {
                     if (input.length == 3 && input[1].matches("[a-h][1-8]") && input[2].matches("[a-h][1-8]")) {
                         ChessPosition from = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
                         ChessPosition to = new ChessPosition(input[2].charAt(1) - '0',input[2].charAt(0) - ('a'-1));
-                        makeMove(from, to,  input);
-                        ChessBoardUI.drawBoard(teamColor, null);
+                        makeMove(from, to, input);
+
+                        boardPrinter.drawBoard(teamColor, null);
                     }
                     else {
                         out.println("Please provide a to and from coordinate (ex: 'c3 d5')");
@@ -75,7 +78,7 @@ public class InGame {
                 case "highlight":
                     if (input.length == 2 && input[1].matches("[a-h][1-8]")) {
                         ChessPosition position = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
-                        ChessBoardUI.drawBoard(teamColor, position);
+                        boardPrinter.drawBoard(teamColor, position);
                     }
                     else {
                         out.println("Please provide a coordinate (ex: 'c3')");
@@ -93,7 +96,7 @@ public class InGame {
     }
 
     private void observeLoop(Boolean inGame) {
-        ChessBoardUI.drawBoard("WHITE", null);
+        boardPrinter.drawBoard("WHITE", null);
         while (inGame) {
             String[] input = getUserInput();
             switch (input[0]) {
@@ -101,7 +104,7 @@ public class InGame {
                     printObserveHelpMenu();
                     break;
                 case "redraw":
-                    ChessBoardUI.drawBoard("WHITE", null);
+                    boardPrinter.drawBoard("WHITE", null);
                     break;
                 case "leave":
                     inGame = false;
@@ -110,7 +113,7 @@ public class InGame {
                 case "highlight":
                     if (input.length == 2 && input[1].matches("[a-h][1-8]")) {
                         ChessPosition position = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
-                        ChessBoardUI.drawBoard("WHITE", position);
+                        boardPrinter.drawBoard("WHITE", position);
                     }
                     else {
                         out.println("Please provide a coordinate (ex: 'c3')");
@@ -165,8 +168,10 @@ public class InGame {
             }
         }
 
+        try {
+            game.makeMove(new ChessMove(from, to, promotion));
+        } catch (InvalidMoveException e) {}
         server.makeMove(gameID, new ChessMove(from, to, promotion));
-
 
     }
 
@@ -181,4 +186,7 @@ public class InGame {
         };
     }
 
+    public ChessGame getGame() {
+        return game;
+    }
 }

@@ -112,7 +112,7 @@ public class ChessGame {
 
         // Check if starting piece exists
         if (board.getPiece(move.startPosition()) == null) {
-            throw new InvalidMoveException("Invalid move, no valid piece found");
+            throw new InvalidMoveException("Invalid move, oops there's not a piece there");
         }
 
         // Check if it's the current teams turn

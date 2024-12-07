@@ -26,11 +26,11 @@ public class ChessBoardUI {
     }
 
 
-    public static void main(String[] args, String team) {
+    public void main(String[] args, String team) {
         drawBoard(team, null);
     }
 
-    public static void drawBoard(String team, ChessPosition selectedPos) {
+    public void drawBoard(String team, ChessPosition selectedPos) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -46,7 +46,6 @@ public class ChessBoardUI {
         ChessGame game = ChessGame.getStaticInstance();
         updateStaticInstance(game);
         ChessBoard chessBoard = game.getBoard();
-        //out.println(possibleMoves);
 
 
         drawLetters(out, team);
@@ -67,7 +66,7 @@ public class ChessBoardUI {
 
     }
 
-    private static Collection<ChessMove> getMoves(ChessPosition selectedPos) {
+    private Collection<ChessMove> getMoves(ChessPosition selectedPos) {
         Collection<ChessMove> possibleMoves = selectedPos != null ? staticValidMoves(selectedPos) : null;
         HashSet<ChessPosition> possibleSquares = HashSet.newHashSet(possibleMoves != null ? possibleMoves.size() : 0);
         if (possibleMoves != null) {
@@ -79,8 +78,7 @@ public class ChessBoardUI {
         return possibleMoves;
     }
 
-
-    private static void drawLetters(PrintStream out, String team) {
+    private void drawLetters(PrintStream out, String team) {
         out.print(SET_BG_COLOR_DARK_GREEN);
         String[] letters = {"h", "g", "f", "e", "d", "c", "b", "a"};
         out.print(EMPTY);
@@ -94,7 +92,7 @@ public class ChessBoardUI {
         out.println();
     }
 
-    private static void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow, String team,
+    private void drawRow(PrintStream out, ChessBoard chessBoard, int boardRow, String team,
                                 Collection<ChessMove> moves, ChessPosition selectedPos) {
 
         out.print(" " + boardRow + " "); // number the row
@@ -105,7 +103,6 @@ public class ChessBoardUI {
         for (int boardCol = startCol; boardCol != endCol; boardCol += step) {
             ChessMove move = new ChessMove(selectedPos, new ChessPosition(boardRow, boardCol), null);
             out.print(SET_TEXT_COLOR_NICE);
-            //out.println(moves);
 
             if ((boardCol + boardRow) % 2 == 0) {
                 if (moves != null && moves.contains(move)){
@@ -120,8 +117,9 @@ public class ChessBoardUI {
                 else {out.print(SET_BG_COLOR_LIGHT);}
 
             }
-
-            drawSquare(out, chessBoard.getPiece(new ChessPosition(boardRow, boardCol)));
+            ChessPosition position = new ChessPosition(boardRow, boardCol);
+            ChessPiece piece = game.getBoard().getPiece(position);
+            drawSquare(out, piece);
 
             if (boardCol == (team.equals("WHITE") ? 8 : 1)) {
                 out.print(SET_BG_COLOR_DARK_GREEN);
@@ -133,14 +131,14 @@ public class ChessBoardUI {
     }
 
 
-    private static void printLetters(PrintStream out, String player) {
+    private void printLetters(PrintStream out, String player) {
         out.print(SET_TEXT_COLOR_NICE);
 
         out.print(player);
     }
 
 
-    private static void drawSquare(PrintStream out, ChessPiece piece) {
+    private void drawSquare(PrintStream out, ChessPiece piece) {
         out.print(SET_TEXT_COLOR_BLACK);
 
         if (piece != null) {
@@ -156,7 +154,7 @@ public class ChessBoardUI {
         else {out.print(EMPTY);}
     }
 
-    private static void printPiece(PrintStream out, ChessPiece piece, String rook, String knight, String bishop,
+    private void printPiece(PrintStream out, ChessPiece piece, String rook, String knight, String bishop,
                                    String queen, String king, String pawn) {
             switch (piece.getPieceType()) {
                 case ROOK -> out.print(rook);

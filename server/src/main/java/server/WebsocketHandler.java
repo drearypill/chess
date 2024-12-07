@@ -25,7 +25,9 @@ import websocket.commands.*;
 
 
 @WebSocket
-public class WebsocketHandler {@OnWebSocketConnect
+public class WebsocketHandler {
+
+    @OnWebSocketConnect
 public void onConnect(Session session) throws Exception {
     Server.gameSessions.put(session, 0);
 }

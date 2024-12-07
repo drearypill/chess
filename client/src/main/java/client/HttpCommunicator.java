@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.GamesList;
@@ -158,7 +159,6 @@ public class HttpCommunicator {
         return games.games();
     }
 
-
     public boolean joinGame(int gameId, String playerColor) {
         Map body;
         if (playerColor != null) {
@@ -170,6 +170,19 @@ public class HttpCommunicator {
         Map resp = request("PUT", "/game", jsonBody);
         return !resp.containsKey("Error");
     }
+
+//    public ChessGame getBoard(int gameId) {
+//        String endpoint = "/game/" + gameId + "/board";
+//        String response = requestString("GET", endpoint);
+//
+//        if (response.contains("Error")) {
+//            System.err.println("Failed to fetch board: " + response);
+//            return null;
+//        }
+//
+//        return new Gson().fromJson(response, ChessGame.class);
+//    }
+
 
     private String readerToString(InputStreamReader reader) {
         StringBuilder sb = new StringBuilder();

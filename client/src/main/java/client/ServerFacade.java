@@ -57,6 +57,10 @@ public class ServerFacade {
         return http.joinGame(gameId, playerColor);
     }
 
+//    public ChessGame getBoardForCurrentGame(int gameId) {
+//        return http.getBoard(gameId);
+//    }
+
 
     public void connectWS() {
         try {
@@ -73,7 +77,7 @@ public class ServerFacade {
     }
 
     public void connect(int gameID, ChessGame.TeamColor color) {
-        System.out.println("auth is " + authToken);
+        //System.out.println("auth is " + authToken);
         sendCommand(new Connect(authToken, gameID, color, UserGameCommand.CommandType.CONNECT));
     }
 
