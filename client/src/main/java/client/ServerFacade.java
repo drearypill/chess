@@ -12,7 +12,6 @@ import java.util.*;
 public class ServerFacade {
 
     HttpCommunicator http;
-    String baseURL;
     WebsocketCommunicator ws;
     String serverDomain;
     String authToken;
@@ -29,6 +28,7 @@ public class ServerFacade {
     protected String getAuthToken() {
         return authToken;
     }
+
     protected void setAuthToken(String authToken) {
         this.authToken = authToken;
     }

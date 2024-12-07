@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 
 public class HttpCommunicator {
 
@@ -111,6 +112,7 @@ public class HttpCommunicator {
 
     private HttpURLConnection requestHelper(String method, String endpoint, String body)
             throws URISyntaxException, IOException {
+
         URI uri = new URI(baseURL + endpoint);
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod(method);

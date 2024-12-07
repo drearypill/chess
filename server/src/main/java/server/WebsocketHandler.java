@@ -79,11 +79,11 @@ public void onConnect(Session session) throws Exception {
             GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
 
             System.out.println("GameData: " + game);
-//            System.out.println("Game object in GameData: " + game.game());
-//            if (command.getColor() == null) {
-//                handleJoinObserver(session, command);
-//                return;
-//            }
+
+            if (command.getColor() == null) {
+                handleJoinObserver(session, command);
+                return;
+            }
 
             if (command.getColor() != null) {
                 ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white")
