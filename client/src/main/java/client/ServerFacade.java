@@ -4,12 +4,8 @@ import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
-import model.GamesList;
 import websocket.commands.*;
 
-import java.io.*;
-import java.net.*;
-import java.util.Map;
 import java.util.*;
 
 

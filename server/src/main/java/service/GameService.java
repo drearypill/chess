@@ -126,6 +126,35 @@ public class GameService {
         return true;
     }
 
+    public boolean leaveGame(String authToken, int gameID, String color) throws UnauthorizedException, BadRequestException {
+        GameData gameData;
+        try {
+            gameData = gameDAO.getGame(gameID);
+        } catch (DataAccessException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        String whiteUser = gameData.whiteUsername();
+        String blackUser = gameData.blackUsername();
+
+        if (Objects.equals(color, "WHITE")) {
+            try {
+                gameDAO.updateGame(new GameData(gameID, null, blackUser, gameData.gameName(), gameData.game()));
+            } catch (DataAccessException e) {
+                throw new BadRequestException(e.getMessage());
+            }
+        } else if (Objects.equals(color, "BLACK")) {
+            try {
+                gameDAO.updateGame(new GameData(gameID, whiteUser, null, gameData.gameName(), gameData.game()));
+            } catch (DataAccessException e) {
+                throw new BadRequestException(e.getMessage());
+            }
+        }
+
+        return true;
+    }
+
+
     public void clear() {
         gameDAO.clear();
     }

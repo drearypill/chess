@@ -64,11 +64,8 @@ public void onConnect(Session session) throws Exception {
 
         try {
             if (session != null && session.isOpen()) {
-                // Send an error message to the client
                 sendError(session, new ErrorMessage("WebSocket error: " + throwable.getMessage()));
 
-                // Optionally, close the session after an error
-                //session.close(1011, "An unexpected error occurred");
             }
         } catch (IOException e) {
             System.err.printf("Error sending error message to client: %s%n", e.getMessage());
@@ -81,8 +78,12 @@ public void onConnect(Session session) throws Exception {
             AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
             GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
 
-//            System.out.println("GameData: " + game);
+            System.out.println("GameData: " + game);
 //            System.out.println("Game object in GameData: " + game.game());
+//            if (command.getColor() == null) {
+//                handleJoinObserver(session, command);
+//                return;
+//            }
 
             if (command.getColor() != null) {
                 ChessGame.TeamColor joiningColor = command.getColor().toString().equalsIgnoreCase("white")
@@ -104,18 +105,37 @@ public void onConnect(Session session) throws Exception {
             //ChessGame.TeamColor joiningColor = ChessGame.TeamColor.WHITE;
 
 
-            Notification notif = new Notification("%s has joined the game as %s".formatted(auth.username(), command.getColor()));
+            Notification notif = new Notification("%s has joined the game as %s".formatted(auth.username(), command.getColor())); //.toString()
             broadcastMessage(session, notif);
 
             LoadGame load = new LoadGame(game.game());
             sendMessage(session, load);
         }
         catch (UnauthorizedException e) {
-            sendError(session, new ErrorMessage("Error: Not authorized"));
+            sendError(session, new ErrorMessage("1Error: Not authorized"));
         } catch (BadRequestException e) {
             sendError(session, new ErrorMessage("Error: Not a valid game"));
         }
 
+    }
+
+    private void handleJoinObserver(Session session, Connect command) throws IOException {
+        try {
+            AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
+
+            GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
+
+            Notification notif = new Notification("%s has joined the game as an observer".formatted(auth.username()));
+            broadcastMessage(session, notif);
+
+            LoadGame load = new LoadGame(game.game());
+            sendMessage(session, load);
+        }
+        catch (UnauthorizedException e) {
+            sendError(session, new ErrorMessage("2Error: Not authorized"));
+        } catch (BadRequestException e) {
+            sendError(session, new ErrorMessage("Error: Not a valid game"));
+        }
     }
 
     private void handleMakeMove(Session session, MakeMove command) throws IOException {
@@ -165,7 +185,7 @@ public void onConnect(Session session) throws Exception {
             }
         }
         catch (UnauthorizedException e) {
-            sendError(session, new ErrorMessage("Error: Not authorized"));
+            sendError(session, new ErrorMessage("3Error: Not authorized"));
         } catch (BadRequestException e) {
             sendError(session, new ErrorMessage("Error: invalid game"));
         } catch (InvalidMoveException e) {
@@ -177,13 +197,20 @@ public void onConnect(Session session) throws Exception {
     private void handleLeave(Session session, Leave command) throws IOException {
         try {
             AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
+            GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
+
 
             Notification notif = new Notification("%s has left the game".formatted(auth.username()));
             broadcastMessage(session, notif);
+            //game.blackUsername() = null;
+            Server.gameService.leaveGame(auth.authToken(), game.gameID(), "WHITE");
 
             session.close();
         } catch (UnauthorizedException e) {
-            sendError(session, new ErrorMessage("Error: Not authorized"));
+            sendError(session, new ErrorMessage("4Error: Not authorized"));
+        }
+        catch (BadRequestException e) {
+            sendError(session, new ErrorMessage("Error: invalid game"));
         }
     }
 
@@ -210,7 +237,7 @@ public void onConnect(Session session) throws Exception {
             Notification notif = new Notification("%s has forfeited, %s wins!".formatted(auth.username(), opponentUsername));
             broadcastMessage(session, notif, true);
         } catch (UnauthorizedException e) {
-            sendError(session, new ErrorMessage("Error: Not authorized"));
+            sendError(session, new ErrorMessage("5Error: Not authorized"));
         } catch (BadRequestException e) {
             sendError(session, new ErrorMessage("Error: invalid game"));
         }

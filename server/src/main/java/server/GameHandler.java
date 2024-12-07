@@ -57,4 +57,25 @@ public class GameHandler {
         resp.status(200);
         return "{}";
     }
+
+    public Object leaveGame(Request req, Response resp) throws BadRequestException, UnauthorizedException {
+
+        if (!req.body().contains("\"gameID\":")) {
+            throw new BadRequestException("No gameID provided");
+        }
+
+        String authToken = req.headers("authorization");
+        record JoinGameData(String playerColor, int gameID) {}
+        JoinGameData joinData = new Gson().fromJson(req.body(), JoinGameData.class);
+        boolean leaveSuccess =  gameService.leaveGame(authToken, joinData.gameID(), joinData.playerColor());
+
+        if (!leaveSuccess) {
+            resp.status(403);
+            return "{ \"message\": \"Error: you can't leave bro\" }";
+        }
+        resp.status(200);
+        return "{}";
+    }
+
+
 }

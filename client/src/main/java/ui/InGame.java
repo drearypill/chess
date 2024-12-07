@@ -27,6 +27,8 @@ public class InGame {
     }
     public void run() {
         boolean inGame = true;
+        System.out.println(color);
+
         if (color == null) {
             observeLoop(inGame);
             return;

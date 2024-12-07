@@ -118,23 +118,30 @@ public class PostLogin {
             printJoin();
             return;
         }
-        GameData joinGame = games.get(gameID); // Get the GameData by gameID
-        if (joinGame == null) {
+        GameData joinGameData = games.get(gameID); // Get the GameData by gameID
+        if (joinGameData == null) {
             out.println("Game does not exist.");
             printJoin();
             return;
         }
 
-        ChessGame.TeamColor color = input[2].equalsIgnoreCase("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        ChessGame.TeamColor color = input[2].equalsIgnoreCase("WHITE")
+                ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
 
-        if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
+        if (server.joinGame(joinGameData.gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
             refreshGames();
             inGame = true;
+            System.out.println("ingame");
+
             server.connectWS();
-            server.connect(joinGame.gameID(), color);
-            InGame gameplayREPL = new InGame(server, joinGame, color);
-            gameplayREPL.run();
+            System.out.println("ws conn");
+            server.connect(joinGameData.gameID(), color);
+            System.out.println("join game");
+            InGame gameREPL = new InGame(server, joinGameData, color);
+            System.out.println("created");
+
+            gameREPL.run();
         } else {
             out.println("Color taken or another issue occurred.");
             printJoin();
