@@ -74,7 +74,8 @@ public class WebsocketCommunicator extends Endpoint {
         }
         else {
             InGame.boardPrinter.drawBoard(InGame.color.toString(), null);
-            System.out.print("[IN-GAME] >>> ");}
+            System.out.print("[" + InGame.color.toString() +"] >>> ");
+        }
     }
 
     public void sendMessage(String message) {

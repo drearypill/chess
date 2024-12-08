@@ -3,6 +3,8 @@ package ui;
 import chess.*;
 import client.ServerFacade;
 import model.GameData;
+import websocket.messages.ErrorMessage;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -168,9 +170,7 @@ public class InGame {
             }
         }
 
-        try {
-            game.makeMove(new ChessMove(from, to, promotion));
-        } catch (InvalidMoveException e) {}
+        game.updateBoard(game.getBoard());
         server.makeMove(gameID, new ChessMove(from, to, promotion));
 
     }
@@ -186,7 +186,4 @@ public class InGame {
         };
     }
 
-    public ChessGame getGame() {
-        return game;
-    }
 }

@@ -36,6 +36,11 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public ChessBoard updateBoard(ChessBoard board) {
+        this.board = board;
+        return board;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -145,6 +150,8 @@ public class ChessGame {
 
         // Change turn
         toggleTeamTurn();
+
+        board = updateBoard(board);
     }
 
 

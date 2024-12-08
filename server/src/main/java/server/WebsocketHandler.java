@@ -195,6 +195,7 @@ public void onConnect(Session session) throws Exception {
             sendError(session, new ErrorMessage("Error: invalid game"));
         } catch (InvalidMoveException e) {
             System.out.println("****** error: " + e.getMessage() + "  " + command.getMove().toString());
+            sendError(session, new ErrorMessage("****** error: " + e.getMessage() + "  " + command.getMove().toString()));
             sendError(session, new ErrorMessage("Error: invalid move (you might need to specify a promotion piece)"));
         }
     }
