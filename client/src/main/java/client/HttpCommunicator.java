@@ -21,10 +21,8 @@ public class HttpCommunicator {
     String baseURL;
     ServerFacade facade;
 
-
     public HttpCommunicator(ServerFacade facade, String serverDomain) {
         baseURL = "http://" + serverDomain;
-        //System.out.println(baseURL);
         this.facade = facade;
     }
 
@@ -65,7 +63,6 @@ public class HttpCommunicator {
             return false;
         }
         facade.setAuthToken(null);
-
         //authToken = null;
         return true;
     }
@@ -170,18 +167,6 @@ public class HttpCommunicator {
         Map resp = request("PUT", "/game", jsonBody);
         return !resp.containsKey("Error");
     }
-
-//    public ChessGame getBoard(int gameId) {
-//        String endpoint = "/game/" + gameId + "/board";
-//        String response = requestString("GET", endpoint);
-//
-//        if (response.contains("Error")) {
-//            System.err.println("Failed to fetch board: " + response);
-//            return null;
-//        }
-//
-//        return new Gson().fromJson(response, ChessGame.class);
-//    }
 
 
     private String readerToString(InputStreamReader reader) {

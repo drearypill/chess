@@ -15,10 +15,10 @@ import static ui.EscapeSequences.RESET_TEXT_COLOR;
 public class InGame {
 
     ServerFacade server;
+    public static ChessBoardUI boardPrinter;
     ChessGame game;
     public static ChessGame.TeamColor color;
     int gameID;
-    public static ChessBoardUI boardPrinter;
 
 
     public InGame(ServerFacade server, GameData gameData, ChessGame.TeamColor color) {
@@ -26,6 +26,7 @@ public class InGame {
         this.game = gameData.game();
         InGame.color = color;
         this.gameID = gameData.gameID();
+
         boardPrinter = new ChessBoardUI(game);
     }
 
@@ -38,7 +39,6 @@ public class InGame {
         }
         String teamColor = color.name();
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
-        //ChessBoardUI.drawBoard(teamColor, null);
         while (inGame) {
             String[] input = getUserInput();
             switch (input[0]) {
@@ -48,14 +48,13 @@ public class InGame {
                 case "redraw":
                     boardPrinter.drawBoard(teamColor, null);
 //                  System.out.println(server.getBoardForCurrentGame(gameID).toString());
-
                     break;
                 case "leave":
                     inGame = false;
                     server.leave(gameID);
                     break;
                 case "move":
-                    if (input.length == 3 && input[1].matches("[a-h][1-8]") && input[2].matches("[a-h][1-8]")) {
+                    if (input.length >= 3 && input[1].matches("[a-h][1-8]") && input[2].matches("[a-h][1-8]")) {
                         ChessPosition from = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
                         ChessPosition to = new ChessPosition(input[2].charAt(1) - '0',input[2].charAt(0) - ('a'-1));
                         makeMove(from, to, input);

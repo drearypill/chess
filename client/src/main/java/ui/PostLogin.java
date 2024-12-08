@@ -16,7 +16,6 @@ public class PostLogin {
 
     boolean inGame;
 
-
     public PostLogin(ServerFacade server) {
         this.server = server;
         games = new HashMap<>();
@@ -25,6 +24,7 @@ public class PostLogin {
 
     public void run() {
         boolean loggedIn = true;
+        inGame = false;
         while (loggedIn && !inGame) {
             String[] input = getUserInput();
             refreshGames();
@@ -35,7 +35,9 @@ public class PostLogin {
                     server.logout();
                     loggedIn = false;
                 }
-                case "list"-> {printGames();}
+                case "list"-> {
+                    refreshGames();
+                    printGames();}
                 case "create"-> {
                     if (input.length != 2) {
                         out.println("Please provide a name");

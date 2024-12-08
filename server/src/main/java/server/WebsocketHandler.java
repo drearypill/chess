@@ -80,7 +80,7 @@ public void onConnect(Session session) throws Exception {
             AuthData auth = Server.userAuthService.getAuth(command.getAuthString());
             GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
 
-            System.out.println("GameData: " + game);
+            //System.out.println("GameData: " + game);
 
             if (command.getColor() == null) {
                 handleJoinObserver(session, command);
