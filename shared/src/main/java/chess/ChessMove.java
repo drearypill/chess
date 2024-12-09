@@ -39,6 +39,10 @@ public record ChessMove(ChessPosition startPosition, ChessPosition endPosition, 
         return endPosition;
     }
 
+    public ChessPiece.PieceType getPromotionPiece() {
+        return promotionPiece;
+    }
+
 
     /**
      * Gets the type of piece to promote a pawn to if pawn promotion is part of this
@@ -53,7 +57,7 @@ public record ChessMove(ChessPosition startPosition, ChessPosition endPosition, 
 
     @Override
     public String toString() {
-        return "" +
+        return "" + startPosition +
                 endPosition
                 + promotionPiece;
     }

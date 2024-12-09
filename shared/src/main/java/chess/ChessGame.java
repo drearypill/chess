@@ -46,11 +46,6 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {return this.teamTurn;}
 
-    public static Collection<ChessMove> staticValidMoves(ChessPosition position) {
-        ChessGame game = new ChessGame();
-        return game.validMoves(position);
-    }
-
     /**
      * Set's which teams turn it is
      *
@@ -109,51 +104,33 @@ public class ChessGame {
         board.movePiece(move);
         boolean endangersKing = isInCheck(startPiece.getTeamColor());
         board = originalBoard;
-
+        //System.out.println(move);
+        //System.out.println(endangersKing);
         return endangersKing;
     }
 
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
-        // Check if starting piece exists
-        if (board.getPiece(move.startPosition()) == null) {
-            throw new InvalidMoveException("Invalid move, oops there's not a piece there");
+        boolean isTeamsTurn = getTeamTurn() == board.getTeamOfSquare(move.getStartPosition());
+        Collection<ChessMove> goodMoves = validMoves(move.getStartPosition());
+        if (goodMoves == null) {
+            throw new InvalidMoveException("No valid moves available");
         }
+        boolean isValidMove = goodMoves.contains(move);
 
-        // Check if it's the current teams turn
-        if (board.getPiece(move.startPosition()).getTeamColor() != teamTurn) {
-            throw new InvalidMoveException("Invalid move, wait your turn!");
-        }
-
-        // Before any move can be made, we have to make sure the king is not in check
-        if (isInCheck(board.getPiece(move.startPosition()).getTeamColor())) {
-            // Check if the new move is going to remove check
-            if (!moveWillEndangerKing(move)) {
-                throw new InvalidMoveException("Your king is in check, you must resolve that!");
+        if (isValidMove && isTeamsTurn) {
+            ChessPiece pieceToMove = board.getPiece(move.getStartPosition());
+            if (move.getPromotionPiece() != null) { //Change piece type if promotion is applied
+                pieceToMove = new ChessPiece(pieceToMove.getTeamColor(), move.getPromotionPiece());
             }
+
+            board.addPiece(move.getStartPosition(), null);
+            board.addPiece(move.getEndPosition(), pieceToMove);
+            setTeamTurn(getTeamTurn() == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
         }
-
-        ArrayList<ChessMove> possibleMoves = new ArrayList<>(validMoves(move.startPosition()));
-
-        // Check if the desired move is valid
-        if (!possibleMoves.contains(move)) {
-            throw new InvalidMoveException("Invalid move: " + move);
+        else {
+            throw new InvalidMoveException(String.format("Valid move: %b  Your Turn: %b", isValidMove, isTeamsTurn));
         }
-
-        // Check if moving will endanger the king
-        if (moveWillEndangerKing(move)) {
-            throw new InvalidMoveException("That move puts your king in check!");
-        }
-
-        // Do move here
-        board.movePiece(move);
-
-        // Change turn
-        toggleTeamTurn();
-
-        board = updateBoard(board);
     }
-
 
     /**
      * Determines if the given team is in check
@@ -319,7 +296,7 @@ public class ChessGame {
         return validMoves;
     }
 
-    private void toggleTeamTurn() {
+    public void toggleTeamTurn() {
         if (teamTurn == TeamColor.BLACK) {
             teamTurn = TeamColor.WHITE;
         }

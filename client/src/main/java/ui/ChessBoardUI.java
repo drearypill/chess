@@ -9,7 +9,6 @@ import java.util.Objects;
 import chess.*;
 
 import static chess.ChessGame.TeamColor.WHITE;
-import static chess.ChessGame.staticValidMoves;
 import static chess.ChessGame.updateStaticInstance;
 import static ui.EscapeSequences.*;
 
