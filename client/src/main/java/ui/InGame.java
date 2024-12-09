@@ -58,6 +58,7 @@ public class InGame {
                         ChessPosition from = new ChessPosition(input[1].charAt(1) - '0', input[1].charAt(0) - ('a'-1));
                         ChessPosition to = new ChessPosition(input[2].charAt(1) - '0',input[2].charAt(0) - ('a'-1));
                         makeMove(from, to, input);
+                        //game.toggleTeamTurn();
 
                         boardPrinter.drawBoard(teamColor, null);
                     }

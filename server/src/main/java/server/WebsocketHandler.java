@@ -156,10 +156,9 @@ public void onConnect(Session session) throws Exception {
             }
 
             if (game.game().getTeamTurn().equals(userColor)) {
+                Server.gameService.updateGame(auth.authToken(), game);
                 System.out.println(command.getMove());
                 game.game().makeMove(command.getMove());
-//                Server.gameService.leaveGame(auth.authToken(), game.gameID(), "WHITE");
-
 
                 Notification notif;
                 ChessGame.TeamColor opponentColor = userColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
@@ -190,14 +189,16 @@ public void onConnect(Session session) throws Exception {
             }
         }
         catch (UnauthorizedException e) {
-            sendError(session, new ErrorMessage("3Error: Not authorized"));
+            sendError(session, new ErrorMessage("Error: Can't make move, Not authorized"));
         } catch (BadRequestException e) {
-            sendError(session, new ErrorMessage("Error: invalid game"));
+            sendError(session, new ErrorMessage("Error: invalid game bad game ID"));
         } catch (InvalidMoveException e) {
             System.out.println("****** error: " + e.getMessage() + "  " + command.getMove().toString());
-            sendError(session, new ErrorMessage("****** error: " + e.getMessage() + "  " + command.getMove().toString()));
-            sendError(session, new ErrorMessage("Error: invalid move (you might need to specify a promotion piece)"));
+            sendError(session, new ErrorMessage("Invalid move error: " + e.getMessage())); // + "  " + command.getMove().toString()
+            //sendError(session, new ErrorMessage("Error: invalid move (you might need to specify a promotion piece)"));
         }
+
+
     }
 
     private void handleLeave(Session session, Leave command) throws IOException {
